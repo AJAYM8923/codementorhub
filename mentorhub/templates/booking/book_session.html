@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Session with {{ mentor.full_name }} - CodeMentorHub</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/signup.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/book_session.css' %}">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Book a Session</h1>
+        
+        <div class="mentor-info">
+            <h2>{{ mentor.full_name }}</h2>
+            <p>{{ mentor.headline }}</p>
+            <p>{{ mentor.years_of_experience }} years experience</p>
+        </div>
+        
+        <div class="rate-info">
+            <h3>Session Rate: ${{ mentor.hourly_rate }}/hour</h3>
+            <p>Default session duration: {{ mentor.session_duration }} minutes</p>
+        </div>
+        
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.session_date.id_for_label }}">Session Date:</label>
+                    {{ form.session_date }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.session_time.id_for_label }}">Session Time:</label>
+                    {{ form.session_time }}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.duration_minutes.id_for_label }}">Duration (minutes):</label>
+                {{ form.duration_minutes }}
+                <div class="duration-info">
+                    <strong>Cost calculation:</strong> ${{ mentor.hourly_rate }} × (duration ÷ 60) = <span id="total-cost">${{ mentor.hourly_rate }}</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}">Notes (optional):</label>
+                {{ form.notes }}
+                <small class="notes-hint">Any specific topics you'd like to discuss or questions you have</small>
+            </div>
+            
+            <input type="submit" value="Proceed to Payment">
+        </form>
+        
+        <div class="links">
+            <p><a href="{% url 'mentor_detail' mentor.id %}">← Back to Mentor Profile</a></p>
+            <p><a href="{% url 'find_mentors' %}">← Browse Other Mentors</a></p>
+        </div>
+    </div>
+    
+    <script>
+        // Set min date for the date input to today
+        (function() {
+            const dateInput = document.getElementById('{{ form.session_date.id_for_label }}');
+            const timeInput = document.getElementById('{{ form.session_time.id_for_label }}');
+            if (dateInput) {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                dateInput.setAttribute('min', `${yyyy}-${mm}-${dd}`);
+
+                // When date changes, if it's today ensure time is not in the past
+                dateInput.addEventListener('change', function() {
+                    const selected = new Date(this.value + 'T00:00:00');
+                    const now = new Date();
+                    if (selected.toDateString() === now.toDateString()) {
+                        // set min time to current time rounded up to next 15 minutes
+                        const mins = now.getMinutes();
+                        const round = Math.ceil(mins / 15) * 15;
+                        now.setMinutes(round);
+                        now.setSeconds(0);
+                        const hh = String(now.getHours()).padStart(2, '0');
+                        const mm = String(now.getMinutes()).padStart(2, '0');
+                        if (timeInput) timeInput.min = `${hh}:${mm}`;
+                    } else {
+                        if (timeInput) timeInput.removeAttribute('min');
+                    }
+                });
+            }
+        })();
+
+        // Calculate total cost based on duration
+        document.getElementById('{{ form.duration_minutes.id_for_label }}').addEventListener('input', function() {
+            const duration = parseInt(this.value) || 60;
+                const hourlyRate = parseFloat('{{ mentor.hourly_rate }}');
+            const totalCost = (hourlyRate * duration / 60).toFixed(2);
+            document.getElementById('total-cost').textContent = '$' + totalCost;
+        });
+        
+        // Initialize min time if the selected date is today
+        (function() {
+            const dateInput = document.getElementById('{{ form.session_date.id_for_label }}');
+            const timeInput = document.getElementById('{{ form.session_time.id_for_label }}');
+            if (!dateInput || !timeInput) return;
+            const today = new Date();
+            const selected = new Date(dateInput.value + 'T00:00:00');
+            if (dateInput.value && selected.toDateString() === today.toDateString()) {
+                const mins = today.getMinutes();
+                const round = Math.ceil(mins / 15) * 15;
+                today.setMinutes(round);
+                today.setSeconds(0);
+                const hh = String(today.getHours()).padStart(2, '0');
+                const mm = String(today.getMinutes()).padStart(2, '0');
+                timeInput.min = `${hh}:${mm}`;
+            }
+        })();
+    </script>
+</body>
+</html>

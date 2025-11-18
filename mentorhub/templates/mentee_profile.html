@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - CodeMentorHub</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/signup.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mentee_profile.css' %}">
+</head>
+<body>
+    <div class="form-container">
+        <div class="profile-header">
+                {% if mentee_profile.profile_picture %}
+                <img src="{{ mentee_profile.profile_picture.url }}" alt="{{ mentee_profile.full_name }}" class="profile-picture">
+            {% else %}
+                <div class="profile-picture-placeholder">
+                    {{ mentee_profile.full_name|first|upper }}
+                </div>
+            {% endif %}
+            <h2>{{ mentee_profile.full_name }}</h2>
+            <span class="level-badge level-{{ mentee_profile.current_level }}">
+                {{ mentee_profile.get_current_level_display }}
+            </span>
+        </div>
+        
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="full_name">Full Name:</label>
+                <input type="text" id="full_name" name="full_name" value="{{ mentee_profile.full_name|default:request.user.first_name|default:request.user.username }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="profile_picture">Profile Picture:</label>
+                <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
+                {% if mentee_profile.profile_picture %}
+                    <small class="current-file-badge">Current: {{ mentee_profile.profile_picture.name }}</small>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="current_level">Current Level:</label>
+                <select id="current_level" name="current_level" required>
+                    <option value="beginner" {% if mentee_profile.current_level == 'beginner' %}selected{% endif %}>Beginner</option>
+                    <option value="intermediate" {% if mentee_profile.current_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                    <option value="advanced" {% if mentee_profile.current_level == 'advanced' %}selected{% endif %}>Advanced</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="interests">Interests:</label>
+                <textarea id="interests" name="interests" placeholder="e.g., Web Development, APIs, Django, Machine Learning" required>{{ mentee_profile.interests }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="goal">Goal:</label>
+                <textarea id="goal" name="goal" placeholder="e.g., Get a backend job, Build my own project, Learn advanced Django concepts" required>{{ mentee_profile.goal }}</textarea>
+            </div>
+            
+            <input type="submit" value="Update Profile">
+        </form>
+        
+        <div class="links">
+            <p><a href="{% url 'find_mentors' %}">🔍 Find Mentors</a></p>
+            <p><a href="{% url 'mentee_dashboard' %}">📅 My Sessions</a></p>
+            <p><a href="{% url 'home' %}">← Back to Home</a></p>
+        </div>
+    </div>
+</body>
+</html>

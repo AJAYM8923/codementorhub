@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Skills</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <style>
+        body { background: #f5f5f5; }
+        .container { max-width: 800px; margin: 20px auto; }
+        .card { background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.06); margin-bottom: 16px; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 8px 0; border-bottom: 1px solid #eee; }
+        form { display:flex; gap:10px; }
+        input[type=text]{ flex:1; padding:10px; border:1px solid #ddd; border-radius:4px; }
+        button { padding:10px 16px; }
+        a { color:#007bff; text-decoration:none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Skills</h1>
+        <div class="card">
+            <form method="post">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Add new skill" required>
+                <button type="submit">Add</button>
+                <a href="{% url 'admin_dashboard' %}" style="margin-left:auto;">← Back to Dashboard</a>
+            </form>
+        </div>
+        <div class="card">
+            <ul>
+                {% for skill in skills %}
+                    <li>{{ skill.name }}|<a href="{% url 'delete_skills' skill.id %}">Delete</a>|<a href="{% url 'edit_skills' skill.id %}">Edit</a></li>
+                {% empty %}
+                    <li style="color:#666;">No skills yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Sessions - CodeMentorHub</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mentee_dashboard.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>My Sessions</h1>
+            <p>Manage your booked mentoring sessions</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="{% url 'find_mentors' %}">Find Mentors</a>
+            <a href="{% url 'mentee_profile_view' %}">My Profile</a>
+            <a href="{% url 'home' %}">Home</a>
+        </div>
+        
+        <div class="section">
+            <h2>📅 Upcoming Sessions</h2>
+            {% if upcoming_sessions %}
+                {% for session in upcoming_sessions %}
+                    <div class="session-card">
+                        <div class="session-header">
+                            <div class="session-title">{{ session.mentor.full_name }}</div>
+                            <span class="session-status status-{{ session.status }}">{{ session.get_status_display }}</span>
+                        </div>
+                        
+                        <div class="session-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Date</div>
+                                <div class="detail-value">{{ session.session_date }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Time</div>
+                                <div class="detail-value">{{ session.session_time }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Duration</div>
+                                <div class="detail-value">{{ session.duration_minutes }} minutes</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Amount</div>
+                                <div class="detail-value">${{ session.amount_paid }}</div>
+                            </div>
+                        </div>
+                        
+                        {% if session.status == 'pending' %}
+                            <div class="notice" style="margin-top:10px; background:#fff3cd; border:1px solid #ffeaa7; padding:10px; border-radius:4px; color:#856404;">
+                                ⏳ Waiting for mentor approval. You'll receive an email once accepted.
+                            </div>
+                        {% endif %}
+                        {% if session.get_meeting_link and session.status == 'confirmed' %}
+                            <div class="meeting-link" style="margin-top:12px; background:#d1ecf1; border:2px solid #0c5460; padding:12px; border-radius:6px; text-align:center;">
+                                <strong style="color: #0c5460; font-size: 16px;">📹 Meeting Link Available</strong>
+                                <br>
+                                <a href="{{ session.get_meeting_link }}" target="_blank" style="display: inline-block; margin-top: 8px; background: #0c5460; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold;">
+                                    Join Google Meet
+                                </a>
+                                <div style="margin-top: 8px; font-size: 12px; color: #0c5460;">
+                                    {{ session.get_meeting_link }}
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if session.meeting_notes %}
+                            <div style="margin-top: 10px;">
+                                <strong>Notes:</strong> {{ session.meeting_notes }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <h3>No upcoming sessions</h3>
+                    <p>You don't have any upcoming sessions. <a href="{% url 'find_mentors' %}">Find a mentor</a> to book your first session!</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if past_sessions %}
+        <div class="section">
+            <h2>📚 Past Sessions</h2>
+            {% for session in past_sessions %}
+                <div class="session-card">
+                    <div class="session-header">
+                        <div class="session-title">{{ session.mentor.full_name }}</div>
+                        <span class="session-status status-{{ session.status }}">{{ session.get_status_display }}</span>
+                    </div>
+                    
+                    <div class="session-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Date</div>
+                            <div class="detail-value">{{ session.session_date }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Time</div>
+                            <div class="detail-value">{{ session.session_time }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">{{ session.duration_minutes }} minutes</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Amount</div>
+                            <div class="detail-value">${{ session.amount_paid }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% comment %} Cancelled sessions section {% endcomment %}
+        {% with cancelled=sessions_cancelled %}
+        {% if cancelled %}
+        <div class="section">
+            <h2>❗ Cancelled Sessions</h2>
+            {% for session in cancelled %}
+                <div class="session-card">
+                    <div class="session-header">
+                        <div class="session-title">{{ session.mentor.full_name }}</div>
+                        <span class="session-status status-cancelled">Cancelled</span>
+                    </div>
+                    <div class="session-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Date</div>
+                            <div class="detail-value">{{ session.session_date }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Time</div>
+                            <div class="detail-value">{{ session.session_time }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Amount</div>
+                            <div class="detail-value">${{ session.amount_paid }}</div>
+                        </div>
+                    </div>
+                    <div class="notice" style="margin-top:10px; background:#f8d7da; border:1px solid #f5c6cb; padding:10px; border-radius:4px; color:#721c24;">
+                        This session was cancelled by the mentor. A refund will be credited within 3 business days.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

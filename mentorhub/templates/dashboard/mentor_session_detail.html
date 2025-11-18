@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Details - CodeMentorHub</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mentor_dashboard.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Session Details</h1>
+        </div>
+
+        <div class="mentor-info">
+            <h3>{{ mentor_profile.full_name }}</h3>
+            <p>{{ mentor_profile.headline }}</p>
+        </div>
+
+        <div class="section">
+            <h2>Session with {{ session.mentee.first_name|default:session.mentee.username }}</h2>
+
+            <div class="session-card">
+                <div class="session-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Date</div>
+                        <div class="detail-value">{{ session.session_date }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Time</div>
+                        <div class="detail-value">{{ session.session_time }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">{{ session.duration_minutes }} minutes</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">{{ session.get_status_display }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Payment</div>
+                        <div class="detail-value">{{ session.payment_status }} — ${{ session.amount_paid }}</div>
+                    </div>
+                </div>
+
+                {% if session.get_meeting_link %}
+                <div class="meeting-link">
+                    <strong>Meeting Link:</strong>
+                    <a href="{{ session.get_meeting_link }}" target="_blank">{{ session.get_meeting_link }}</a>
+                </div>
+                {% endif %}
+
+                {% if session.meeting_notes %}
+                <div style="margin-top: 10px;">
+                    <strong>Mentee Notes:</strong> {{ session.meeting_notes }}
+                </div>
+                {% endif %}
+
+                <div style="margin-top:20px;">
+                    <a href="{% url 'mentor_dashboard' %}">← Back to Dashboard</a>
+                </div>
+                <div style="margin-top:10px;">
+                    <form method="post" action="{% url 'mentor_session_set_status' session.id %}" class="status-form-detail">
+                        {% csrf_token %}
+                        <label for="status_detail">Change status:</label>
+                        <select id="status_detail" name="action">
+                            <option value="">-- Select --</option>
+                            {% if session.status == 'completed' %}
+                                <option value="completed" selected>Completed</option>
+                            {% else %}
+                                <option value="completed">Completed</option>
+                            {% endif %}
+                            {% if session.status == 'cancelled' %}
+                                <option value="cancelled" selected>Cancelled</option>
+                            {% else %}
+                                <option value="cancelled">Cancelled</option>
+                            {% endif %}
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var sel = document.getElementById('status_detail');
+        if (sel) {
+            sel.addEventListener('change', function() {
+                var val = this.value;
+                if (!val) return;
+                if (val === 'cancelled') {
+                    if (!confirm('Are you sure you want to cancel this session?')) {
+                        this.value = '';
+                        return;
+                    }
+                }
+                var form = this.closest('form');
+                if (form) form.submit();
+            });
+        }
+    </script>
+</body>
+</html>

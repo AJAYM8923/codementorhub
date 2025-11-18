@@ -1,0 +1,34 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Result</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="container" style="padding:24px;">
+    <div class="card">
+      <h1>Result for {{ attempt.category.name }}</h1>
+      <p><strong>User:</strong> {{ attempt.user.username }}</p>
+      <p><strong>Score:</strong> {{ attempt.score }} / {{ attempt.total_marks }} ({{ attempt.performance_percent }}%)</p>
+      <p><strong>Performance:</strong> {{ attempt.performance_text }}</p>
+
+      <h2>Answers Breakdown</h2>
+      <ol class="answers-list">
+        {% for a in answers %}
+          <li class="answer-item">
+            <div class="question-text">{{ a.question.text }}</div>
+            <div class="your-answer">Your answer: {% if a.selected_option %}{{ a.selected_option.text }}{% else %}<em>No answer</em>{% endif %}</div>
+            <div class="marks">Marks awarded: <strong>{{ a.marks_awarded }}</strong></div>
+          </li>
+        {% endfor %}
+      </ol>
+
+      <p><a class="btn-secondary" href="{% url 'quiz_categories' %}">Back to tests</a></p>
+    </div>
+  </main>
+  {% include 'partials/footer.html' %}
+</body>
+</html>

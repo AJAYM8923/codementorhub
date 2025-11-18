@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ mentor.full_name }} - CodeMentorHub</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mentor_detail.css' %}">
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'find_mentors' %}" class="back-link">← Back to Mentors</a>
+        
+        <div class="mentor-header">
+            <div class="mentor-info">
+                {% if mentor.profile_picture %}
+                    <img src="{{ mentor.profile_picture.url }}" alt="{{ mentor.full_name }}" class="mentor-avatar">
+                {% else %}
+                    <div class="mentor-avatar-placeholder">
+                        {{ mentor.full_name|first|upper }}
+                    </div>
+                {% endif %}
+                <div class="mentor-details">
+                    <h1>{{ mentor.full_name }}</h1>
+                    <div class="headline">{{ mentor.headline }}</div>
+                    <div class="mentor-meta">
+                        <div class="meta-item">
+                            <span class="rate">${{ mentor.hourly_rate }}/hr</span>
+                        </div>
+                        <div class="meta-item">
+                            📍 {{ mentor.location|default:"Location not specified" }}
+                        </div>
+                        <div class="meta-item">
+                            💼 {{ mentor.years_of_experience }} years experience
+                        </div>
+                        <div class="meta-item">
+                            ⏱️ {{ mentor.session_duration }} min sessions
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>About</h2>
+            <p>{{ mentor.bio }}</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>Skills & Technologies</h2>
+            <div class="skills-list">
+                {% for skill in mentor.skills.all %}
+                    <span class="skill-tag">{{ skill.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>Available For</h2>
+            <p>{{ mentor.available_for }}</p>
+        </div>
+        
+        {% if mentor.linkedin_url or mentor.github_url %}
+        <div class="content-section">
+            <h2>Links</h2>
+            <div class="links-inline">
+                {% if mentor.linkedin_url %}
+                    <a href="{{ mentor.linkedin_url }}" target="_blank" class="link-external">🔗 LinkedIn</a>
+                {% endif %}
+                {% if mentor.github_url %}
+                    <a href="{{ mentor.github_url }}" target="_blank" class="link-external">🐙 GitHub</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="cta-section">
+            <h2>Ready to Get Started?</h2>
+            <p>Book a session with {{ mentor.full_name }} and accelerate your learning journey!</p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'book_session' mentor.id %}" class="cta-button">Book a Session</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="cta-button">Login to Book Session</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

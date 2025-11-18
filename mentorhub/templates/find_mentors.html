@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Mentors - CodeMentorHub</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .search-form {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .search-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .search-form select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .search-form button {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+        .mentors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .mentor-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+        .mentor-card:hover {
+            transform: translateY(-5px);
+        }
+        .mentor-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .mentor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .mentor-info h3 {
+            margin: 0;
+            color: #333;
+        }
+        .mentor-info p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .mentor-bio {
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .mentor-skills {
+            margin-bottom: 15px;
+        }
+        .skill-tag {
+            display: inline-block;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        .mentor-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+        .rate {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .experience {
+            color: #6c757d;
+        }
+        .view-profile-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .view-profile-btn:hover {
+            background-color: #218838;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        .pagination a, .pagination span {
+            padding: 8px 16px;
+            margin: 0 4px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .pagination .current {
+            background-color: #007bff;
+            color: white;
+        }
+        .no-mentors {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Find Mentors</h1>
+            <p>Connect with experienced developers and get guidance on your coding journey</p>
+        </div>
+        
+        <div class="search-section">
+            <form method="get" class="search-form">
+                <input type="text" name="search" placeholder="Search mentors by name, skills, or expertise..." value="{{ search_query }}">
+                <select name="skill">
+                    <option value="">All Skills</option>
+                    {% for skill in skills %}
+                        <option value="{{ skill.name }}" {% if selected_skill == skill.name %}selected{% endif %}>
+                            {{ skill.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Search</button>
+            </form>
+            
+            {% if search_query or selected_skill %}
+                <p style="color: #666; margin: 0;">
+                    {% if search_query %}
+                        Showing results for "{{ search_query }}"
+                        {% if selected_skill %} with skill "{{ selected_skill }}"{% endif %}
+                    {% else %}
+                        Showing mentors with skill "{{ selected_skill }}"
+                    {% endif %}
+                </p>
+            {% endif %}
+        </div>
+        
+        {% if mentors %}
+            <div class="mentors-grid">
+                {% for mentor in mentors %}
+                    <div class="mentor-card">
+                        <div class="mentor-header">
+                            {% if mentor.profile_picture %}
+                                <img src="{{ mentor.profile_picture.url }}" alt="{{ mentor.full_name }}" class="mentor-avatar">
+                            {% else %}
+                                <div class="mentor-avatar" style="background-color: #ddd; display: flex; align-items: center; justify-content: center; color: #666;">
+                                    {{ mentor.full_name|first|upper }}
+                                </div>
+                            {% endif %}
+                            <div class="mentor-info">
+                                <h3>{{ mentor.full_name }}</h3>
+                                <p>{{ mentor.headline }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mentor-bio">
+                            {{ mentor.bio|truncatewords:20 }}
+                        </div>
+                        
+                        <div class="mentor-skills">
+                            {% for skill in mentor.skills.all|slice:":5" %}
+                                <span class="skill-tag">{{ skill.name }}</span>
+                            {% endfor %}
+                            {% if mentor.skills.count > 5 %}
+                                <span class="skill-tag">+{{ mentor.skills.count|add:"-5" }} more</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mentor-meta">
+                            <span class="rate">${{ mentor.hourly_rate }}/hr</span>
+                            <span class="experience">{{ mentor.years_of_experience }} years exp.</span>
+                        </div>
+                        
+                        <a href="{% url 'mentor_detail' mentor.id %}" class="view-profile-btn">View Profile</a>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if mentors.has_other_pages %}
+                <div class="pagination">
+                    {% if mentors.has_previous %}
+                        <a href="?page={{ mentors.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_skill %}&skill={{ selected_skill }}{% endif %}">&laquo; Previous</a>
+                    {% endif %}
+                    
+                    {% for num in mentors.paginator.page_range %}
+                        {% if mentors.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% elif num > mentors.number|add:'-3' and num < mentors.number|add:'3' %}
+                            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_skill %}&skill={{ selected_skill }}{% endif %}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if mentors.has_next %}
+                        <a href="?page={{ mentors.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_skill %}&skill={{ selected_skill }}{% endif %}">Next &raquo;</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="no-mentors">
+                <h3>No mentors found</h3>
+                <p>Try adjusting your search criteria or check back later for new mentors.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

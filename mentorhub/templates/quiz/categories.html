@@ -1,0 +1,27 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mock Tests</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="container" style="padding:24px;">
+    <h1 class="page-title">Available Mock Tests</h1>
+    <div class="card-grid">
+      {% for c in categories %}
+        <div class="card">
+          <h3>{{ c.name }}</h3>
+          <p class="muted">{{ c.description }}</p>
+          <p><a class="btn-primary" href="{% url 'take_test' c.id %}">Take Test</a></p>
+        </div>
+      {% empty %}
+        <div class="card">No categories available.</div>
+      {% endfor %}
+    </div>
+  </main>
+  {% include 'partials/footer.html' %}
+</body>
+</html>

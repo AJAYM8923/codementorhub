@@ -1,0 +1,27 @@
+body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+.container { max-width: 1000px; margin: 0 auto; }
+.header { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.session-card { border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; transition: box-shadow 0.2s; }
+.session-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.session-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.session-title { font-size: 18px; font-weight: bold; color: #333; }
+.session-status { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+.status-confirmed { background: #d4edda; color: #155724; }
+.status-pending { background: #fff3cd; color: #856404; }
+.status-completed { background: #e2e3e5; color: #383d41; }
+.session-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+.detail-item { display: flex; flex-direction: column; }
+.detail-label { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 4px; }
+.detail-value { font-weight: bold; color: #333; }
+.meeting-link { background: #e7f3ff; padding: 10px; border-radius: 4px; margin-top: 10px; }
+.meeting-link a { color: #007bff; text-decoration: none; font-weight: bold; }
+.meeting-link a:hover { text-decoration: underline; }
+.empty-state { text-align: center; padding: 40px; color: #666; }
+.empty-state h3 { margin: 0 0 10px 0; }
+.nav-links { display: flex; gap: 15px; margin-bottom: 20px; }
+.nav-links a { color: #007bff; text-decoration: none; padding: 8px 16px; border: 1px solid #007bff; border-radius: 4px; transition: all 0.2s; }
+.nav-links a:hover { background-color: #007bff; color: white; }
+.mentor-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+.mentor-info h3 { margin: 0 0 10px 0; color: #333; }
+

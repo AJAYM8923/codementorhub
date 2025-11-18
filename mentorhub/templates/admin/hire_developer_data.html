@@ -1,0 +1,26 @@
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Number</th>
+        <th>Message</th>
+        <th>Project type</th>
+        <th>Project heading</th>
+        <th>Project details</th>
+        <th>Deadline</th>
+    </tr>
+    {% for entry in data %}
+    <tr>
+        <td>{{ entry.name }}</td>
+        <td>{{ entry.email }}</td>
+        <td>{{ entry.number }}</td>
+        <td>{{ entry.message }}</td>
+        <td>{{ entry.project_type }}</td>
+        <td>{{ entry.project_heading }}</td>
+        <td>{{ entry.project_details }}</td>
+        <td>{{ entry.deadline }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" style="text-align:center; color:#666;">No development service requests found.</td></tr>
+    {% endfor %}
+</table>

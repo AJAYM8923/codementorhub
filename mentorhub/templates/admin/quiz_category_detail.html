@@ -1,0 +1,41 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Category: {{ category.name }}</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="container" style="padding:24px;">
+    <div class="card">
+      <h1>{{ category.name }}</h1>
+      <p class="muted">{{ category.description }}</p>
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <a class="btn-primary" href="{% url 'admin_add_question' category.id %}">Add Question</a>
+        <a class="btn-secondary" href="{% url 'admin_edit_category' category.id %}">Edit Category</a>
+        <a class="btn-danger" href="{% url 'admin_delete_category' category.id %}" onclick="return confirm('Delete this category and all its questions?');">Delete Category</a>
+      </div>
+
+      <h2>Questions</h2>
+      <ol class="question-list">
+        {% for q in questions %}
+          <li class="question-item" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
+            {{ q.text }} <span class="muted">({{ q.marks }} pts)</span>
+            <div style="margin-top: 8px;">
+              <a class="btn-secondary" href="{% url 'admin_edit_question' q.id %}" style="font-size: 12px; padding: 4px 8px;">Edit</a>
+              <a class="btn-danger" href="{% url 'admin_delete_question' q.id %}" onclick="return confirm('Delete this question?');" style="font-size: 12px; padding: 4px 8px;">Delete</a>
+            </div>
+          </li>
+        {% empty %}
+          <li>No questions yet.</li>
+        {% endfor %}
+      </ol>
+
+      <p><a href="{% url 'admin_quiz_manage' %}">Back to tests</a></p>
+    </div>
+  </main>
+  {% include 'partials/footer.html' %}
+</body>
+</html>

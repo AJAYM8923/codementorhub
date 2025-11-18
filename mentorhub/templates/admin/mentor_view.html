@@ -1,0 +1,53 @@
+<h1>Mentor profile</h1>
+<table border="1">
+    <tr>
+        <th>Full Name</th>
+        <td>{{ mentor.full_name }}</td>
+    </tr>
+    <tr>
+        <th>Headline</th>
+        <td>{{ mentor.headline }}</td>
+    </tr>
+    <tr>
+        <th>Bio</th>
+        <td>{{ mentor.bio }}</td>
+    </tr>
+    <tr>
+        <th>Years of Experience</th>
+        <td>{{ mentor.years_of_experience }}</td>
+    </tr>
+    <tr>
+        <th>Hourly Rate</th>
+        <td>${{ mentor.hourly_rate }}</td>
+    </tr>
+    <tr>
+        <th>Skills</th>
+        <td>
+            <ul>
+                {% for skill in mentor.skills.all %}
+                    <li>{{ skill.name }}</li>
+                {% empty %}
+                    <li>No skills listed.</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th>Location</th>
+        <td>{{ mentor.location }}</td>
+    </tr>
+    <tr>
+        <th>Linkedin URL</th>
+        <td>{{ mentor.linkedin_url }}</td>
+    </tr>
+    <tr>
+        <th>Github URL</th>
+        <td>{{ mentor.github_url }}</td>
+    </tr>
+    <tr>
+        <th>Available For</th>
+        <td>${{ mentor.available_for }}</td>
+    </tr>
+    
+</table>
+<a href="{% url 'admin_mentors' %}">← Back to Mentors List</a>

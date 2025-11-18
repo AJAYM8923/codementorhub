@@ -1,0 +1,29 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Delete Category</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="container" style="padding:24px;">
+    <div class="card" style="max-width:600px; margin:auto; background-color: #ffebee;">
+      <h1 style="color: #c62828;">Delete Category: {{ category.name }}</h1>
+      <p style="color: #d32f2f; font-weight: bold;">⚠️ WARNING: This action cannot be undone!</p>
+      <p>This will permanently delete the category <strong>{{ category.name }}</strong> and all {{ category.questions.count }} question(s) associated with it.</p>
+      
+      <form method="post" style="margin-top: 20px;">
+        {% csrf_token %}
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-danger" type="submit" style="background-color: #c62828;">Yes, Delete Permanently</button>
+          <a class="btn-secondary" href="{% url 'admin_category_detail' category.id %}">Cancel</a>
+        </div>
+      </form>
+      <p><a href="{% url 'admin_quiz_manage' %}">Back to tests</a></p>
+    </div>
+  </main>
+  {% include 'partials/footer.html' %}
+</body>
+</html>

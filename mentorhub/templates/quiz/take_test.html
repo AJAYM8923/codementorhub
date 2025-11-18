@@ -1,0 +1,39 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Take Test - {{ category.name }}</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="container" style="padding:24px;">
+    <div class="card">
+      <h1>Test: {{ category.name }}</h1>
+      <p class="muted">{{ category.description }}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        {% for q in questions %}
+          <fieldset class="question-block">
+            <legend>Q{{ forloop.counter }} ({{ q.marks }} pts) - {{ q.text }}</legend>
+            <div class="options">
+              {% for opt in q.options.all %}
+                <label class="option-row">
+                  <input type="radio" name="q_{{ q.id }}" value="{{ opt.id }}"> <span>{{ opt.text }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+        {% endfor %}
+
+        <div style="margin-top:16px;">
+          <button class="btn-primary" type="submit">Submit Test</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  {% include 'partials/footer.html' %}
+</body>
+</html>
