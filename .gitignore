@@ -1,1 +1,10 @@
+venv/
+*.env
 *.json
+__pycache__/
+*.pyc
+media/
+staticfiles/
+db.sqlite3
+.idea/
+.vscode/
