@@ -8,3 +8,6 @@ staticfiles/
 db.sqlite3
 .idea/
 .vscode/
+mentorhub/media/
+mentorhub/mentee_profiles/
+
