@@ -1,17 +1,50 @@
-<table border="1">
-    <tr>
-        <td>Name</td>
-        <td>Email</td>
-        <td>Subject</td>
-        <td>Message</td>
-        <td>Created at</td>
-    </tr>
-    {% for msg in messages %}
-    <tr>
-        <td>{{ msg.name }}</td>
-        <td>{{ msg.email }}</td>
-        <td>{{ msg.subject }}</td>
-        <td>{{ msg.message }}</td>
-        <td>{{ msg.created_at }}</td>
-        {% endfor %}
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Messages - CodeMentorHub</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}">
+</head>
+<body>
+    <div class="layout">
+        {% include 'admin/partials/sidebar.html' %}
+        <main class="content">
+        <h1>Contact Messages</h1>
+        
+        {% if messages %}
+        <div class="section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for msg in messages %}
+                    <tr>
+                        <td>{{ msg.name }}</td>
+                        <td>{{ msg.email }}</td>
+                        <td>{{ msg.subject }}</td>
+                        <td>{{ msg.message|truncatewords:20 }}</td>
+                        <td>{{ msg.created_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>No Contact Messages</h3>
+            <p>There are no contact messages yet.</p>
+        </div>
+        {% endif %}
+        </main>
+    </div>
+</body>
+</html>

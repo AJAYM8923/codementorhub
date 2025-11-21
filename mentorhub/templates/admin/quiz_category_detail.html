@@ -1,41 +1,49 @@
-<!doctype html>
-{% load static %}
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Category: {{ category.name }}</title>
-  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
 </head>
 <body>
-  {% include 'partials/header.html' %}
-  <main class="container" style="padding:24px;">
-    <div class="card">
-      <h1>{{ category.name }}</h1>
-      <p class="muted">{{ category.description }}</p>
-      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <a class="btn-primary" href="{% url 'admin_add_question' category.id %}">Add Question</a>
-        <a class="btn-secondary" href="{% url 'admin_edit_category' category.id %}">Edit Category</a>
-        <a class="btn-danger" href="{% url 'admin_delete_category' category.id %}" onclick="return confirm('Delete this category and all its questions?');">Delete Category</a>
-      </div>
+    <div class="layout">
+        {% include 'admin/partials/sidebar.html' %}
+        <main class="content">
+            <h1>{{ category.name }}</h1>
+            <div class="section">
+                <p class="muted">{{ category.description }}</p>
+                <div style="display: flex; gap: 8px; margin: 20px 0; flex-wrap: wrap;">
+                    <a class="btn btn-primary" href="{% url 'admin_add_question' category.id %}">+ Add Question</a>
+                    <a class="btn btn-secondary" href="{% url 'admin_edit_category' category.id %}">Edit Category</a>
+                    <a class="btn btn-danger" href="{% url 'admin_delete_category' category.id %}" onclick="return confirm('Delete this category and all its questions?');">Delete Category</a>
+                </div>
 
-      <h2>Questions</h2>
-      <ol class="question-list">
-        {% for q in questions %}
-          <li class="question-item" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
-            {{ q.text }} <span class="muted">({{ q.marks }} pts)</span>
-            <div style="margin-top: 8px;">
-              <a class="btn-secondary" href="{% url 'admin_edit_question' q.id %}" style="font-size: 12px; padding: 4px 8px;">Edit</a>
-              <a class="btn-danger" href="{% url 'admin_delete_question' q.id %}" onclick="return confirm('Delete this question?');" style="font-size: 12px; padding: 4px 8px;">Delete</a>
+                <h2>Questions</h2>
+                {% if questions %}
+                    <ol class="question-list">
+                        {% for q in questions %}
+                            <li class="question-item">
+                                <strong>{{ q.text }}</strong> <span class="badge approved">{{ q.marks }} pts</span>
+                                <div style="margin-top: 8px;">
+                                    <a class="btn-link" href="{% url 'admin_edit_question' q.id %}" style="font-size: 12px;">Edit</a> | 
+                                    <a class="btn-link" href="{% url 'admin_delete_question' q.id %}" onclick="return confirm('Delete this question?');" style="font-size: 12px; color: #ef4444;">Delete</a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                {% else %}
+                    <div class="empty-state">
+                        <p>No questions in this category yet.</p>
+                    </div>
+                {% endif %}
+
+                <div style="margin-top: 30px;">
+                    <a href="{% url 'admin_quiz_manage' %}" class="btn-link">← Back to Tests</a>
+                </div>
             </div>
-          </li>
-        {% empty %}
-          <li>No questions yet.</li>
-        {% endfor %}
-      </ol>
-
-      <p><a href="{% url 'admin_quiz_manage' %}">Back to tests</a></p>
+        </main>
     </div>
-  </main>
-  {% include 'partials/footer.html' %}
 </body>
 </html>

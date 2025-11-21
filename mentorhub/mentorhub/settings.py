@@ -118,7 +118,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "main" / "static",  
+    BASE_DIR / "main" / "static",
+    BASE_DIR / "static",
 ]
 
 # Media files (user-uploaded files like profile pictures)
