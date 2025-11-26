@@ -5,176 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Confirmed - CodeMentorHub</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/signup.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/user_theme.css' %}">
     <style>
-        .form-container {
-            max-width: 600px;
+        /* Confirmation page styles */
+        .page-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem 3rem; }
+        .confirm-hero {
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            color: white; padding: 2.5rem 1.5rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem;
         }
-        .success-header {
-            text-align: center;
-            background: #d4edda;
-            color: #155724;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-        .success-header h1 {
-            margin: 0 0 10px 0;
-            font-size: 28px;
-        }
-        .session-details {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .session-details h3 {
-            margin: 0 0 15px 0;
-            color: #333;
-        }
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-        .meeting-link {
-            background: #e7f3ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .meeting-link a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .meeting-link a:hover {
-            text-decoration: underline;
-        }
-        .next-steps {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        .next-steps h4 {
-            margin: 0 0 15px 0;
-            color: #856404;
-        }
-        .next-steps ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        .next-steps li {
-            margin-bottom: 8px;
-            color: #856404;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        .action-buttons a {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
+        .confirm-grid { display: grid; grid-template-columns: 1fr 380px; gap: 2rem; align-items: start; }
+
+        .panel { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+
+        .success-header { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: left; }
+        .success-header h1 { margin: 0; font-size: 1.6rem; }
+
+        .session-details h3, .next-steps h4 { margin-top: 0; color: #333; }
+        .detail-item { display:flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px dashed #eee; }
+        .detail-item:last-child { border-bottom: none; }
+        .detail-item strong { color: #333; }
+
+        .meeting-link { background: linear-gradient(90deg, rgba(102,126,234,0.06), rgba(118,75,162,0.04)); padding: 1rem; border-radius: 8px; text-align:center; }
+        .meeting-link a { color: #667eea; font-weight:700; text-decoration:none; }
+
+        .next-steps { background: linear-gradient(90deg, rgba(255,243,205,0.7), rgba(255,243,205,0.4)); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,235,156,0.6); }
+        .next-steps ul { margin:0; padding-left: 1.2rem; }
+        .next-steps li { margin-bottom:0.6rem; color:#855e00; }
+
+        .action-buttons { display:flex; gap: 0.75rem; margin-top: 1rem; }
+        .btn-primary, .btn-secondary { display:inline-block; padding:0.9rem; border-radius:8px; text-align:center; font-weight:700; text-decoration:none; }
+        .btn-primary { background:linear-gradient(135deg,#667eea,#764ba2); color:white; }
+        .btn-secondary { background:#6b7280; color:white; }
+
+        .links { margin-top: 1rem; }
+
+        @media (max-width: 900px) { .confirm-grid { grid-template-columns: 1fr; } .confirm-hero { padding: 1.5rem; } }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <div class="success-header" style="background: {% if session.status == 'confirmed' %}#d4edda{% else %}#fff3cd{% endif %}; color: {% if session.status == 'confirmed' %}#155724{% else %}#856404{% endif %};">
+    {% include 'partials/header.html' %}
+
+    <div class="page-wrap">
+        <section class="confirm-hero">
             {% if session.status == 'confirmed' %}
-                <h1>🎉 Session Confirmed!</h1>
+                <h2>🎉 Session Confirmed!</h2>
                 <p>Your payment was processed and the mentor accepted your session.</p>
             {% else %}
-                <h1>⏳ Awaiting Mentor Approval</h1>
+                <h2>⏳ Awaiting Mentor Approval</h2>
                 <p>Your payment was processed. We'll notify you once the mentor accepts.</p>
             {% endif %}
-        </div>
-        
-        <div class="session-details">
-            <h3>Session Details</h3>
-            <div class="detail-item">
-                <span><strong>Mentor:</strong></span>
-                <span>{{ session.mentor.full_name }}</span>
-            </div>
-            <div class="detail-item">
-                <span><strong>Date:</strong></span>
-                <span>{{ session.session_date }}</span>
-            </div>
-            <div class="detail-item">
-                <span><strong>Time:</strong></span>
-                <span>{{ session.session_time }}</span>
-            </div>
-            <div class="detail-item">
-                <span><strong>Duration:</strong></span>
-                <span>{{ session.duration_minutes }} minutes</span>
-            </div>
-            <div class="detail-item">
-                <span><strong>Amount Paid:</strong></span>
-                <span>${{ session.amount_paid }}</span>
-            </div>
-            {% if session.meeting_notes %}
-            <div class="detail-item">
-                <span><strong>Notes:</strong></span>
-                <span>{{ session.meeting_notes }}</span>
-            </div>
-            {% endif %}
-        </div>
-        
-        {% if session.status == 'confirmed' and session.meeting_link %}
-            <div class="meeting-link">
-                <h4>📹 Meeting Link</h4>
-                <a href="{{ session.meeting_link }}" target="_blank">{{ session.meeting_link }}</a>
-                <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
-                    Click the link above to join your session. Please join 5 minutes before the scheduled time.
-                </p>
-            </div>
-        {% endif %}
-        
-        <div class="next-steps">
-            <h4>📋 What's Next?</h4>
-            <ul>
-                {% if session.status == 'confirmed' %}
-                    <li>Check your email for a confirmation message with session details</li>
-                    <li>Add the session to your calendar</li>
-                    <li>Prepare any questions or topics you'd like to discuss</li>
-                    <li>Join the meeting 5 minutes before the scheduled time</li>
-                {% else %}
-                    <li>Your session is pending mentor approval</li>
-                    <li>We'll email you when the mentor accepts and share the meeting link</li>
+        </section>
+
+        <div class="confirm-grid">
+            <div class="panel">
+                <div class="success-header" style="background: {% if session.status == 'confirmed' %}rgba(212,237,218,0.8){% else %}rgba(255,243,205,0.9){% endif %};">
+                    <h1>{% if session.status == 'confirmed' %}You're all set!{% else %}Waiting for mentor{% endif %}</h1>
+                </div>
+
+                <div class="session-details">
+                    <h3>Session Details</h3>
+                    <div class="detail-item"><span><strong>Mentor:</strong></span><span>{{ session.mentor.full_name }}</span></div>
+                    <div class="detail-item"><span><strong>Date:</strong></span><span>{{ session.session_date }}</span></div>
+                    <div class="detail-item"><span><strong>Time:</strong></span><span>{{ session.session_time }}</span></div>
+                    <div class="detail-item"><span><strong>Duration:</strong></span><span>{{ session.duration_minutes }} minutes</span></div>
+                    <div class="detail-item"><span><strong>Amount Paid:</strong></span><span>${{ session.amount_paid }}</span></div>
+                    {% if session.meeting_notes %}
+                        <div class="detail-item"><span><strong>Notes:</strong></span><span>{{ session.meeting_notes }}</span></div>
+                    {% endif %}
+                </div>
+
+                {% if session.status == 'confirmed' and session.meeting_link %}
+                    <div class="meeting-link">
+                        <h4>📹 Meeting Link</h4>
+                        <a href="{{ session.meeting_link }}" target="_blank">Join Meeting</a>
+                        <p style="margin-top:8px;color:#666;">Please join 5 minutes before the scheduled time.</p>
+                    </div>
                 {% endif %}
-            </ul>
-        </div>
-        
-        <div class="action-buttons">
-            <a href="{% url 'mentee_dashboard' %}" class="btn-primary">View My Sessions</a>
-            <a href="{% url 'find_mentors' %}" class="btn-secondary">Book Another Session</a>
-        </div>
-        
-        <div class="links">
-            <p><a href="{% url 'home' %}">← Back to Home</a></p>
+
+                <div class="next-steps">
+                    <h4>📋 What's Next?</h4>
+                    <ul>
+                        {% if session.status == 'confirmed' %}
+                            <li>Check your email for a confirmation message with session details</li>
+                            <li>Add the session to your calendar</li>
+                            <li>Prepare any questions or topics you'd like to discuss</li>
+                            <li>Join the meeting 5 minutes before the scheduled time</li>
+                        {% else %}
+                            <li>Your session is pending mentor approval</li>
+                            <li>We'll email you when the mentor accepts and share the meeting link</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="panel">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <a href="{% url 'mentee_dashboard' %}" class="btn-primary">View My Sessions</a>
+                </div>
+                <div style="margin-top:0.8rem;">
+                    <a href="{% url 'find_mentors' %}" class="btn-secondary" style="display:inline-block;width:100%;padding:0.8rem;border-radius:8px;text-align:center;color:white;text-decoration:none;font-weight:700;">Book Another Session</a>
+                </div>
+                <div class="links">
+                    <p style="margin-top:1rem;"><a href="{% url 'home' %}">← Back to Home</a></p>
+                </div>
+            </aside>
         </div>
     </div>
+
+    {% include 'partials/footer.html' %}
 </body>
 </html>

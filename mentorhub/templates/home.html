@@ -18,14 +18,17 @@
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'find_mentors' %}">Find Mentors</a></li>
                 <li><a href="{% url 'quiz_categories' %}">Mock Tests</a></li>
+                <li><a href="{% url 'hire_developer' %}">Hire Developers</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+
+            <ul class="nav-links nav-right">
                 {% if user.is_authenticated %}
-                    {% if user.is_authenticated and user.mentor_profile %}
+                    {% if user.mentor_profile %}
                         <li><a href="{% url 'mentor_dashboard' %}">Mentor Dashboard</a></li>
                     {% endif %}
                     <li><a href="{% url 'mentee_profile_view' %}">My Profile</a></li>
-                    <li><a href="{% url 'quiz_categories' %}">Mock Tests</a></li>
                     <li><a href="{% url 'mentee_dashboard' %}">My Sessions</a></li>
-                     <li><a href="{% url 'hire_developer' %}">Hire a developer</a></li>
                     <li><span class="welcome-text">Welcome, {{ user.first_name|default:user.username }}!</span></li>
                     <li><a href="{% url 'logout' %}" class="btn">Logout</a></li>
                 {% else %}
@@ -45,92 +48,94 @@
         </div>
     {% endif %}
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Unlock Your Coding Potential with Personalized Mentorship</h1>
-            <p>Connect with experienced developers and get guidance, code reviews, and career advice — all in one place.</p>
-            {% if user.is_authenticated %}
-                <a href="{% url 'find_mentors' %}" class="btn-primary">Find a Mentor</a>
-            {% else %}
-                <a href="{% url 'signup' %}" class="btn-primary">Get Started</a>
-            {% endif %}
-            <!-- Add Hire Developer CTA visible in the homepage content area -->
-            <a href="{% url 'hire_developer' %}" class="btn-hire">Hire a Developer</a>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features">
-        <div class="features-container">
-            <h2>Why Choose CodeMentorHub?</h2>
-            <p class="features-subtitle">All the tools and support you need to accelerate your coding journey</p>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">👨‍🏫</div>
-                    <h3>1-on-1 Mentorship</h3>
-                    <p>Get personalized guidance from industry experts who've walked the path you're on. Learn best practices and avoid common pitfalls.</p>
-                    <ul class="feature-list">
-                        <li>Expert guidance tailored to your level</li>
-                        <li>Real-world problem solving</li>
-                        <li>Career path planning</li>
-                    </ul>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⏰</div>
-                    <h3>Flexible Learning</h3>
-                    <p>Choose mentors, schedule sessions, and learn at your own pace — anytime, anywhere. Book sessions that fit your schedule.</p>
-                    <ul class="feature-list">
-                        <li>Schedule sessions anytime</li>
-                        <li>Learn from anywhere globally</li>
-                        <li>Flexible cancellation policy</li>
-                    </ul>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
-                    <h3>Career Growth</h3>
-                    <p>Get interview prep, portfolio reviews, and roadmap planning for your tech career. Accelerate your professional development.</p>
-                    <ul class="feature-list">
-                        <li>Interview preparation</li>
-                        <li>Portfolio reviews</li>
-                        <li>Job market insights</li>
-                    </ul>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💼</div>
-                    <h3>Hire Developers</h3>
-                    <p>Need a project built quickly? Hire pre-vetted developers for short-term or long-term work. Find talent that matches your needs.</p>
-                    <ul class="feature-list">
-                        <li>Pre-vetted professionals</li>
-                        <li>Flexible engagement models</li>
-                        <li>Quality assured work</li>
-                    </ul>
-                    <a href="{% url 'hire_developer' %}" class="btn-hire">Hire Now</a>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📚</div>
-                    <h3>Mock Tests & Assessments</h3>
-                    <p>Practice with real interview-style questions and track your progress. Build confidence for technical interviews.</p>
-                    <ul class="feature-list">
-                        <li>Category-based quizzes</li>
-                        <li>Detailed performance tracking</li>
-                        <li>Self-paced practice</li>
-                    </ul>
-                    <a href="{% url 'quiz_categories' %}" class="btn-secondary">Take a Test</a>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🤝</div>
-                    <h3>Community Support</h3>
-                    <p>Connect with thousands of learners, share experiences, and grow together. Build your professional network.</p>
-                    <ul class="feature-list">
-                        <li>Active learning community</li>
-                        <li>Peer support & collaboration</li>
-                        <li>Networking opportunities</li>
-                    </ul>
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero">
+            <div class="hero-content">
+                <h1>Unlock Your Coding Potential with Personalized Mentorship</h1>
+                <p>Connect with experienced developers and get guidance, code reviews, and career advice — all in one place.</p>
+                <div class="hero-ctas">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'find_mentors' %}" class="btn-primary">Find a Mentor</a>
+                    {% else %}
+                        <a href="{% url 'signup' %}" class="btn-primary">Get Started</a>
+                    {% endif %}
+                    <a href="{% url 'hire_developer' %}" class="btn-hire">Hire a Developer</a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="features-container">
+                <h2>Why Choose CodeMentorHub?</h2>
+                <p class="features-subtitle">All the tools and support you need to accelerate your coding journey</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden>👨‍🏫</div>
+                        <h3>1-on-1 Mentorship</h3>
+                        <p>Get personalized guidance from industry experts who've walked the path you're on. Learn best practices and avoid common pitfalls.</p>
+                        <ul class="feature-list">
+                            <li>Expert guidance tailored to your level</li>
+                            <li>Real-world problem solving</li>
+                            <li>Career path planning</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden>⏰</div>
+                        <h3>Flexible Learning</h3>
+                        <p>Choose mentors, schedule sessions, and learn at your own pace — anytime, anywhere. Book sessions that fit your schedule.</p>
+                        <ul class="feature-list">
+                            <li>Schedule sessions anytime</li>
+                            <li>Learn from anywhere globally</li>
+                            <li>Flexible cancellation policy</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden>🚀</div>
+                        <h3>Career Growth</h3>
+                        <p>Get interview prep, portfolio reviews, and roadmap planning for your tech career. Accelerate your professional development.</p>
+                        <ul class="feature-list">
+                            <li>Interview preparation</li>
+                            <li>Portfolio reviews</li>
+                            <li>Job market insights</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden>💼</div>
+                        <h3>Hire Developers</h3>
+                        <p>Need a project built quickly? Hire pre-vetted developers for short-term or long-term work. Find talent that matches your needs.</p>
+                        <ul class="feature-list">
+                            <li>Pre-vetted professionals</li>
+                            <li>Flexible engagement models</li>
+                            <li>Quality assured work</li>
+                        </ul>
+                        <a href="{% url 'hire_developer' %}" class="btn-hire">Hire Now</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden>📚</div>
+                        <h3>Mock Tests & Assessments</h3>
+                        <p>Practice with real interview-style questions and track your progress. Build confidence for technical interviews.</p>
+                        <ul class="feature-list">
+                            <li>Category-based quizzes</li>
+                            <li>Detailed performance tracking</li>
+                            <li>Self-paced practice</li>
+                        </ul>
+                        <a href="{% url 'quiz_categories' %}" class="btn-secondary">Take a Test</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden>🤝</div>
+                        <h3>Community Support</h3>
+                        <p>Connect with thousands of learners, share experiences, and grow together. Build your professional network.</p>
+                        <ul class="feature-list">
+                            <li>Active learning community</li>
+                            <li>Peer support & collaboration</li>
+                            <li>Networking opportunities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     <!-- Mentors Section -->
     <section class="mentors">

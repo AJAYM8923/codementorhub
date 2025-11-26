@@ -1,72 +1,493 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Session with {{ mentor.full_name }} - CodeMentorHub</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/signup.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/book_session.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/user_theme.css' %}">
+    <style>
+        /* ===== BOOK SESSION SPECIFIC STYLES ===== */
+        main {
+            padding: 3rem 0;
+            background-color: #f8f9fa;
+            min-height: calc(100vh - 200px);
+        }
+
+        .booking-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .booking-hero {
+            background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.04), transparent 10%),
+                        radial-gradient(circle at 90% 80%, rgba(255,255,255,0.03), transparent 10%),
+                        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .booking-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .booking-hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ===== MENTOR INFO CARD ===== */
+        .mentor-info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            border-left: 5px solid #667eea;
+        }
+
+        .mentor-info-card h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 0 0 0.5rem 0;
+            font-weight: 700;
+        }
+
+        .mentor-info-card p {
+            margin: 0.3rem 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .mentor-info-card p:first-of-type {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* ===== RATE INFO ===== */
+        .rate-info {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 2px solid #667eea;
+        }
+
+        .rate-info h3 {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin: 0 0 0.8rem 0;
+            font-weight: 700;
+        }
+
+        .rate-info p {
+            margin: 0;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        /* ===== MESSAGES ===== */
+        .messages {
+            margin-bottom: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== FORM SECTION ===== */
+        .form-wrapper {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .form-wrapper h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .duration-info {
+            margin-top: 0.8rem;
+            padding: 1rem;
+            background-color: #f0f4ff;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #555;
+            border-left: 4px solid #667eea;
+        }
+
+        .duration-info strong {
+            color: #333;
+        }
+
+        #total-cost {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .notes-hint {
+            display: block;
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 0.4rem;
+        }
+
+        /* ===== SUBMIT BUTTON ===== */
+        input[type="submit"] {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 1.5rem;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        input[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        /* ===== NAVIGATION LINKS ===== */
+        .links {
+            margin-top: 2rem;
+        }
+
+        .links p {
+            margin: 0.8rem 0;
+        }
+
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .links a:hover {
+            color: #764ba2;
+            transform: translateX(-4px);
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .booking-hero {
+                padding: 3rem 1.5rem;
+                min-height: auto;
+            }
+
+            .booking-hero h1 {
+                font-size: 2rem;
+            }
+
+            .booking-hero p {
+                font-size: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .form-wrapper {
+                padding: 1.5rem;
+            }
+
+            .form-wrapper h3 {
+                font-size: 1.3rem;
+            }
+
+            .mentor-info-card,
+            .rate-info {
+                padding: 1.5rem;
+            }
+
+            .mentor-info-card h2 {
+                font-size: 1.5rem;
+            }
+
+            .rate-info h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .booking-hero {
+                padding: 2rem 1rem;
+            }
+
+            .booking-hero h1 {
+                font-size: 1.6rem;
+            }
+
+            .booking-hero p {
+                font-size: 0.9rem;
+            }
+
+            .booking-container {
+                padding: 0 1rem;
+            }
+
+            .form-wrapper {
+                padding: 1.2rem;
+            }
+
+            .form-wrapper h3 {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px;
+                padding: 0.8rem;
+            }
+
+            .form-group textarea {
+                min-height: 80px;
+            }
+
+            .duration-info {
+                font-size: 0.85rem;
+                padding: 0.8rem;
+            }
+
+            .mentor-info-card {
+                padding: 1.2rem;
+            }
+
+            .mentor-info-card h2 {
+                font-size: 1.3rem;
+            }
+
+            .rate-info {
+                padding: 1.2rem;
+            }
+
+            .rate-info h3 {
+                font-size: 1.2rem;
+            }
+
+            input[type="submit"] {
+                padding: 0.9rem;
+                font-size: 0.9rem;
+            }
+
+            .links p {
+                margin: 0.6rem 0;
+            }
+
+            .links a {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="form-container">
-        <h1>Book a Session</h1>
-        
-        <div class="mentor-info">
-            <h2>{{ mentor.full_name }}</h2>
-            <p>{{ mentor.headline }}</p>
-            <p>{{ mentor.years_of_experience }} years experience</p>
+    <!-- Header/Navbar -->
+    {% include 'partials/header.html' %}
+
+    <!-- Hero Section -->
+    <section class="booking-hero">
+        <div class="booking-container">
+            <h1>Book a Session</h1>
+            <p>Schedule a mentoring session and start your learning journey today</p>
         </div>
-        
-        <div class="rate-info">
-            <h3>Session Rate: ${{ mentor.hourly_rate }}/hour</h3>
-            <p>Default session duration: {{ mentor.session_duration }} minutes</p>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+        <div class="booking-container">
+            <!-- Mentor Info Card -->
+            <div class="mentor-info-card">
+                <h2>{{ mentor.full_name }}</h2>
+                <p>{{ mentor.headline }}</p>
+                <p>💼 {{ mentor.years_of_experience }} years of experience</p>
+            </div>
+
+            <!-- Rate Info -->
+            <div class="rate-info">
+                <h3>Session Rate: ${{ mentor.hourly_rate }}/hour</h3>
+                <p>📝 Default session duration: {{ mentor.session_duration }} minutes</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Form Section -->
+            <div class="form-wrapper">
+                <h3>Session Details</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.session_date.id_for_label }}">Session Date:</label>
+                            {{ form.session_date }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.session_time.id_for_label }}">Session Time:</label>
+                            {{ form.session_time }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.duration_minutes.id_for_label }}">Duration (minutes):</label>
+                        {{ form.duration_minutes }}
+                        <div class="duration-info">
+                            <strong>💰 Cost calculation:</strong> ${{ mentor.hourly_rate }} × (duration ÷ 60) = <span id="total-cost">${{ mentor.hourly_rate }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.notes.id_for_label }}">Notes (optional):</label>
+                        {{ form.notes }}
+                        <small class="notes-hint">Any specific topics you'd like to discuss or questions you have</small>
+                    </div>
+                    
+                    <input type="submit" value="Proceed to Payment">
+                </form>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="links">
+                <p><a href="{% url 'mentor_detail' mentor.id %}">← Back to Mentor Profile</a></p>
+                <p><a href="{% url 'find_mentors' %}">← Browse Other Mentors</a></p>
+            </div>
         </div>
-        
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
-        <form method="post">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="{{ form.session_date.id_for_label }}">Session Date:</label>
-                    {{ form.session_date }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ form.session_time.id_for_label }}">Session Time:</label>
-                    {{ form.session_time }}
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.duration_minutes.id_for_label }}">Duration (minutes):</label>
-                {{ form.duration_minutes }}
-                <div class="duration-info">
-                    <strong>Cost calculation:</strong> ${{ mentor.hourly_rate }} × (duration ÷ 60) = <span id="total-cost">${{ mentor.hourly_rate }}</span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.notes.id_for_label }}">Notes (optional):</label>
-                {{ form.notes }}
-                <small class="notes-hint">Any specific topics you'd like to discuss or questions you have</small>
-            </div>
-            
-            <input type="submit" value="Proceed to Payment">
-        </form>
-        
-        <div class="links">
-            <p><a href="{% url 'mentor_detail' mentor.id %}">← Back to Mentor Profile</a></p>
-            <p><a href="{% url 'find_mentors' %}">← Browse Other Mentors</a></p>
-        </div>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    {% include 'partials/footer.html' %}
     
     <script>
         // Set min date for the date input to today
@@ -91,8 +512,8 @@
                         now.setMinutes(round);
                         now.setSeconds(0);
                         const hh = String(now.getHours()).padStart(2, '0');
-                        const mm = String(now.getMinutes()).padStart(2, '0');
-                        if (timeInput) timeInput.min = `${hh}:${mm}`;
+                        const mm2 = String(now.getMinutes()).padStart(2, '0');
+                        if (timeInput) timeInput.min = `${hh}:${mm2}`;
                     } else {
                         if (timeInput) timeInput.removeAttribute('min');
                     }
@@ -103,7 +524,7 @@
         // Calculate total cost based on duration
         document.getElementById('{{ form.duration_minutes.id_for_label }}').addEventListener('input', function() {
             const duration = parseInt(this.value) || 60;
-                const hourlyRate = parseFloat('{{ mentor.hourly_rate }}');
+            const hourlyRate = parseFloat('{{ mentor.hourly_rate }}');
             const totalCost = (hourlyRate * duration / 60).toFixed(2);
             document.getElementById('total-cost').textContent = '$' + totalCost;
         });
@@ -121,10 +542,11 @@
                 today.setMinutes(round);
                 today.setSeconds(0);
                 const hh = String(today.getHours()).padStart(2, '0');
-                const mm = String(today.getMinutes()).padStart(2, '0');
-                timeInput.min = `${hh}:${mm}`;
+                const mm2 = String(today.getMinutes()).padStart(2, '0');
+                timeInput.min = `${hh}:${mm2}`;
             }
         })();
     </script>
+
 </body>
 </html>

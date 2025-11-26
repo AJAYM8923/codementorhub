@@ -1,35 +1,345 @@
 <!doctype html>
 {% load static %}
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Test Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Result - CodeMentorHub</title>
   <link rel="stylesheet" href="{% static 'css/home.css' %}">
   <link rel="stylesheet" href="{% static 'css/user_theme.css' %}">
+  <style>
+    /* ===== RESULT PAGE STYLES ===== */
+    .result-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .result-hero {
+        background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.04), transparent 10%),
+                    radial-gradient(circle at 90% 80%, rgba(255,255,255,0.03), transparent 10%),
+                    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .result-hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.8rem;
+        font-weight: 700;
+        line-height: 1.2;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-hero p {
+        font-size: 1.05rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* ===== RESULT SECTION ===== */
+    .result-content-section {
+        padding: 5rem 2rem;
+        background-color: #f8f9fa;
+        min-height: calc(100vh - 300px);
+    }
+
+    .result-wrapper {
+        background-color: white;
+        padding: 3rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* ===== SCORE CARD ===== */
+    .score-card {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+        padding: 2rem;
+        border-radius: 12px;
+        border-left: 5px solid #667eea;
+        margin-bottom: 2rem;
+    }
+
+    .score-card .score-item {
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .score-card .score-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .score-card .score-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .score-card .score-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .performance-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .performance-excellent {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .performance-good {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+
+    .performance-average {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .performance-poor {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    /* ===== ANSWERS BREAKDOWN ===== */
+    .breakdown-section h2 {
+        font-size: 1.8rem;
+        color: #333;
+        margin: 2rem 0 1.5rem 0;
+        font-weight: 700;
+    }
+
+    .answers-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .answer-item {
+        background-color: #fafafa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+
+    .answer-item:hover {
+        border-left-color: #667eea;
+        background-color: #f5f5f5;
+    }
+
+    .question-text {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.8rem;
+        font-size: 1rem;
+    }
+
+    .your-answer {
+        color: #666;
+        margin-bottom: 0.6rem;
+        font-size: 0.95rem;
+    }
+
+    .your-answer em {
+        font-style: italic;
+        color: #999;
+    }
+
+    .marks {
+        color: #27ae60;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    /* ===== ACTION BUTTONS ===== */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e0e0e0;
+    }
+
+    .action-buttons a {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+    .action-buttons a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
+        .result-hero {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .result-hero h1 {
+            font-size: 1.8rem;
+        }
+
+        .result-hero p {
+            font-size: 0.95rem;
+        }
+
+        .result-content-section {
+            padding: 3rem 1.5rem;
+        }
+
+        .result-wrapper {
+            padding: 2rem;
+        }
+
+        .score-card .score-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .breakdown-section h2 {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .result-hero {
+            padding: 2rem 1rem;
+        }
+
+        .result-hero h1 {
+            font-size: 1.4rem;
+        }
+
+        .result-hero p {
+            font-size: 0.85rem;
+        }
+
+        .result-content-section {
+            padding: 1.5rem 1rem;
+        }
+
+        .result-wrapper {
+            padding: 1.5rem;
+        }
+
+        .score-card {
+            padding: 1.5rem;
+        }
+
+        .answer-item {
+            padding: 1.2rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .action-buttons a {
+            font-size: 0.85rem;
+            padding: 0.8rem;
+        }
+    }
+  </style>
 </head>
 <body>
   {% include 'partials/header.html' %}
-  <main class="container" style="padding:24px;">
-    <div class="card">
-      <h1>Result for {{ attempt.category.name }}</h1>
-      <p><strong>User:</strong> {{ attempt.user.username }}</p>
-      <p><strong>Score:</strong> {{ attempt.score }} / {{ attempt.total_marks }} ({{ attempt.performance_percent }}%)</p>
-      <p><strong>Performance:</strong> {{ attempt.performance_text }}</p>
 
-      <h2>Answers Breakdown</h2>
-      <ol class="answers-list">
-        {% for a in answers %}
-          <li class="answer-item">
-            <div class="question-text">{{ a.question.text }}</div>
-            <div class="your-answer">Your answer: {% if a.selected_option %}{{ a.selected_option.text }}{% else %}<em>No answer</em>{% endif %}</div>
-            <div class="marks">Marks awarded: <strong>{{ a.marks_awarded }}</strong></div>
-          </li>
-        {% endfor %}
-      </ol>
-
-      <p><a class="btn-secondary" href="{% url 'quiz_categories' %}">Back to tests</a></p>
+  <!-- Hero Section -->
+  <section class="result-hero">
+    <div class="result-container">
+      <h1>Test Results</h1>
+      <p>Here's your detailed test performance breakdown.</p>
     </div>
-  </main>
+  </section>
+
+  <!-- Result Content Section -->
+  <section class="result-content-section">
+    <div class="result-wrapper">
+      <!-- Score Card -->
+      <div class="score-card">
+        <div class="score-item">
+          <span class="score-label">Test Category:</span>
+          <span class="score-value">{{ attempt.category.name }}</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">User:</span>
+          <span>{{ attempt.user.username }}</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Your Score:</span>
+          <span class="score-value">{{ attempt.score }} / {{ attempt.total_marks }}</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Percentage:</span>
+          <span class="score-value">{{ attempt.performance_percent }}%</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Performance:</span>
+          <span class="performance-badge {% if attempt.performance_percent >= 80 %}performance-excellent{% elif attempt.performance_percent >= 60 %}performance-good{% elif attempt.performance_percent >= 40 %}performance-average{% else %}performance-poor{% endif %}">
+            {{ attempt.performance_text }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Answers Breakdown -->
+      <div class="breakdown-section">
+        <h2>Answers Breakdown</h2>
+        <ol class="answers-list">
+          {% for a in answers %}
+            <li class="answer-item">
+              <div class="question-text">Q{{ forloop.counter }}: {{ a.question.text }}</div>
+              <div class="your-answer">Your answer: {% if a.selected_option %}<strong>{{ a.selected_option.text }}</strong>{% else %}<em>No answer provided</em>{% endif %}</div>
+              <div class="marks">✓ Marks awarded: {{ a.marks_awarded }}</div>
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <a href="{% url 'quiz_categories' %}">Back to Tests</a>
+      </div>
+    </div>
+  </section>
+
   {% include 'partials/footer.html' %}
 </body>
 </html>

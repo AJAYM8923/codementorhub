@@ -1,19 +1,248 @@
 <!doctype html>
 {% load static %}
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Take Test - {{ category.name }}</title>
   <link rel="stylesheet" href="{% static 'css/home.css' %}">
   <link rel="stylesheet" href="{% static 'css/user_theme.css' %}">
+  <style>
+    /* ===== TAKE TEST PAGE STYLES ===== */
+    .test-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .test-hero {
+        background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.04), transparent 10%),
+                    radial-gradient(circle at 90% 80%, rgba(255,255,255,0.03), transparent 10%),
+                    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .test-hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.8rem;
+        font-weight: 700;
+        line-height: 1.2;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .test-hero p {
+        font-size: 1.05rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* ===== FORM SECTION ===== */
+    .test-form-section {
+        padding: 5rem 2rem;
+        background-color: #f8f9fa;
+        min-height: calc(100vh - 300px);
+    }
+
+    .form-wrapper {
+        background-color: white;
+        padding: 3rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .question-block {
+        margin-bottom: 2.5rem;
+        padding: 1.8rem;
+        background-color: #fafafa;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .question-block:focus-within {
+        background-color: #ffffff;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .question-block legend {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1.2rem;
+        display: block;
+    }
+
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .option-row {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background-color: white;
+        border: 1px solid #e0e0e0;
+    }
+
+    .option-row:hover {
+        background-color: #f5f5f5;
+        border-color: #667eea;
+    }
+
+    .option-row input[type="radio"] {
+        margin-right: 1rem;
+        cursor: pointer;
+        width: 18px;
+        height: 18px;
+    }
+
+    .option-row span {
+        color: #333;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        flex: 1;
+    }
+
+    /* ===== SUBMIT BUTTON ===== */
+    .form-submit {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e0e0e0;
+    }
+
+    .form-submit button {
+        flex: 1;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-submit button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .form-submit button:active {
+        transform: translateY(0);
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
+        .test-hero {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .test-hero h1 {
+            font-size: 1.8rem;
+        }
+
+        .test-hero p {
+            font-size: 0.95rem;
+        }
+
+        .test-form-section {
+            padding: 3rem 1.5rem;
+        }
+
+        .form-wrapper {
+            padding: 2rem;
+        }
+
+        .question-block {
+            padding: 1.2rem;
+        }
+
+        .question-block legend {
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .test-hero {
+            padding: 2rem 1rem;
+        }
+
+        .test-hero h1 {
+            font-size: 1.4rem;
+        }
+
+        .test-hero p {
+            font-size: 0.85rem;
+        }
+
+        .test-form-section {
+            padding: 1.5rem 1rem;
+        }
+
+        .form-wrapper {
+            padding: 1.5rem;
+        }
+
+        .question-block {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-row {
+            padding: 0.7rem;
+        }
+
+        .option-row input[type="radio"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .form-submit {
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .form-submit button {
+            font-size: 0.9rem;
+            padding: 0.8rem;
+        }
+    }
+  </style>
 </head>
 <body>
   {% include 'partials/header.html' %}
-  <main class="container" style="padding:24px;">
-    <div class="card">
-      <h1>Test: {{ category.name }}</h1>
-      <p class="muted">{{ category.description }}</p>
 
+  <!-- Hero Section -->
+  <section class="test-hero">
+    <div class="test-container">
+      <h1>{{ category.name }}</h1>
+      <p>{{ category.description }}</p>
+    </div>
+  </section>
+
+  <!-- Test Form Section -->
+  <section class="test-form-section">
+    <div class="form-wrapper">
       <form method="post">
         {% csrf_token %}
         {% for q in questions %}
@@ -29,12 +258,13 @@
           </fieldset>
         {% endfor %}
 
-        <div style="margin-top:16px;">
-          <button class="btn-primary" type="submit">Submit Test</button>
+        <div class="form-submit">
+          <button type="submit">Submit Test</button>
         </div>
       </form>
     </div>
-  </main>
+  </section>
+
   {% include 'partials/footer.html' %}
 </body>
 </html>

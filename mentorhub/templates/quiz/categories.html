@@ -1,28 +1,210 @@
 <!doctype html>
 {% load static %}
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Mock Tests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mock Tests - CodeMentorHub</title>
   <link rel="stylesheet" href="{% static 'css/home.css' %}">
   <link rel="stylesheet" href="{% static 'css/user_theme.css' %}">
+  <style>
+    /* ===== QUIZ PAGE SPECIFIC STYLES ===== */
+    .quiz-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .quiz-hero {
+        background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.04), transparent 10%),
+                    radial-gradient(circle at 90% 80%, rgba(255,255,255,0.03), transparent 10%),
+                    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+        min-height: 380px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quiz-hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        line-height: 1.2;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .quiz-hero p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* ===== CATEGORIES SECTION ===== */
+    .quiz-content-section {
+        padding: 5rem 2rem;
+        background-color: #f8f9fa;
+        min-height: calc(100vh - 500px);
+    }
+
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .category-card {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .category-card h3 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 0.8rem;
+        font-weight: 700;
+    }
+
+    .category-card p {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .category-card a {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .category-card a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
+        .quiz-hero {
+            padding: 3rem 1.5rem;
+            min-height: auto;
+        }
+
+        .quiz-hero h1 {
+            font-size: 2rem;
+        }
+
+        .quiz-hero p {
+            font-size: 1rem;
+        }
+
+        .quiz-content-section {
+            padding: 3rem 1.5rem;
+        }
+
+        .categories-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .quiz-hero {
+            padding: 2rem 1rem;
+            min-height: auto;
+        }
+
+        .quiz-hero h1 {
+            font-size: 1.6rem;
+        }
+
+        .quiz-hero p {
+            font-size: 0.9rem;
+        }
+
+        .quiz-content-section {
+            padding: 2rem 1rem;
+        }
+
+        .category-card {
+            padding: 1.5rem;
+        }
+
+        .category-card h3 {
+            font-size: 1.3rem;
+        }
+    }
+  </style>
 </head>
 <body>
   {% include 'partials/header.html' %}
-  <main class="container" style="padding:24px;">
-    <h1 class="page-title">Available Mock Tests</h1>
-    <div class="card-grid">
-      {% for c in categories %}
-        <div class="card">
-          <h3>{{ c.name }}</h3>
-          <p class="muted">{{ c.description }}</p>
-          <p><a class="btn-primary" href="{% url 'take_test' c.id %}">Take Test</a></p>
-        </div>
-      {% empty %}
-        <div class="card">No categories available.</div>
-      {% endfor %}
+
+  <!-- Hero Section -->
+  <section class="quiz-hero">
+    <div class="quiz-container">
+      <h1>Mock Tests</h1>
+      <p>Test your knowledge and skills with our comprehensive mock tests. Choose a category below to get started.</p>
     </div>
-  </main>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="quiz-content-section">
+    <div class="quiz-container">
+      {% if categories %}
+        <div class="categories-grid">
+          {% for c in categories %}
+            <div class="category-card">
+              <h3>{{ c.name }}</h3>
+              <p>{{ c.description }}</p>
+              <a href="{% url 'take_test' c.id %}">Take Test</a>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <p>No test categories available at the moment. Please check back later.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
   {% include 'partials/footer.html' %}
 </body>
 </html>
