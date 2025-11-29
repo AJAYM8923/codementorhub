@@ -51,10 +51,7 @@ def login_view(request):
                 # Redirect staff to custom admin dashboard
                 if user.is_staff:
                     return redirect('admin_dashboard')
-                # If the user doesn't yet have a mentee profile, send them to create one
-                if not hasattr(user, 'mentee_profile'):
-                    return redirect('mentee_profile_view')
-
+                # Redirect all users to home
                 return redirect('home')
             else:
                 messages.error(request, "Invalid username or password. Please try again.")
@@ -325,65 +322,6 @@ def mentor_detail(request, mentor_id):
 
 # Mentee Views
 @login_required
-def mentee_profile_view(request):
-    """Read-only view of the mentee profile. Shows profile picture, details,
-    and links to edit profile and change password (only for the owner).
-    """
-    default_name = request.user.first_name or request.user.username
-    mentee_profile, created = MenteeProfile.objects.get_or_create(
-        user=request.user,
-        defaults={
-            'full_name': default_name,
-            'interests': '',
-            'current_level': 'beginner',
-            'goal': ''
-        }
-    )
-
-    if created:
-        messages.info(request, "A profile was created for you. You can edit it using the link below.")
-
-    return render(request, 'mentee_profile_view.html', {'mentee_profile': mentee_profile})
-
-
-@login_required
-def mentee_profile_edit(request):
-    """Edit (or create) the mentee profile. Only the owner can edit their profile.
-    This reuses the existing template `mentee_profile.html` which contains the edit form.
-    """
-    default_name = request.user.first_name or request.user.username
-    mentee_profile, created = MenteeProfile.objects.get_or_create(
-        user=request.user,
-        defaults={
-            'full_name': default_name,
-            'interests': '',
-            'current_level': 'beginner',
-            'goal': ''
-        }
-    )
-
-    if request.method == 'POST':
-        # Update mentee profile
-        mentee_profile.full_name = request.POST.get('full_name', mentee_profile.full_name)
-        mentee_profile.interests = request.POST.get('interests', mentee_profile.interests)
-        mentee_profile.current_level = request.POST.get('current_level', mentee_profile.current_level)
-        mentee_profile.goal = request.POST.get('goal', mentee_profile.goal)
-
-        # Handle profile picture upload
-        if 'profile_picture' in request.FILES:
-            mentee_profile.profile_picture = request.FILES['profile_picture']
-
-        mentee_profile.save()
-
-        if created:
-            messages.success(request, "Your mentee profile has been created!")
-        else:
-            messages.success(request, "Your mentee profile has been updated!")
-
-        return redirect('mentee_profile_view')
-
-    return render(request, 'mentee_profile.html', {'mentee_profile': mentee_profile})
-
 
 @login_required
 def change_password(request):
@@ -418,7 +356,7 @@ def change_password(request):
         request.user.save()
         update_session_auth_hash(request, request.user)
         messages.success(request, "Your password has been changed successfully.")
-        return redirect('mentee_profile_view')
+        return redirect('home')
 
     return render(request, 'change_password.html')
 
@@ -1171,7 +1109,12 @@ def admin_add_question(request, category_id=None):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():
-            question = form.save()
+            question = form.save(commit=False)
+            # Ensure category is set from URL parameter if provided
+            if category:
+                question.category = category
+            question.save()
+            
             formset = OptionFormSet(request.POST, instance=question)
             if formset.is_valid():
                 formset.save()
@@ -1180,8 +1123,9 @@ def admin_add_question(request, category_id=None):
             else:
                 # If options invalid, delete question to avoid orphan
                 question.delete()
+                # Re-render form without instance since question was deleted
         else:
-            formset = OptionFormSet(request.POST)
+            formset = OptionFormSet()
     else:
         initial = {}
         if category:

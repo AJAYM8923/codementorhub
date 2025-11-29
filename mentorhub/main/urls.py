@@ -17,10 +17,8 @@ urlpatterns = [
     path('mentors/',views.find_mentors,name="find_mentors"),
     path('mentors/<int:mentor_id>/',views.mentor_detail,name="mentor_detail"),
     
-    # Mentee URLs
-    path('mentee/profile/', views.mentee_profile_view, name="mentee_profile_view"),
-    path('mentee/profile/edit/', views.mentee_profile_edit, name="mentee_profile_edit"),
-    path('mentee/change-password/', views.change_password, name='change_password'),
+    # User Settings
+    path('change-password/', views.change_password, name='change_password'),
 
     # Custom Admin URLs
     path('admin/', views.admin_dashboard, name="admin_dashboard"),

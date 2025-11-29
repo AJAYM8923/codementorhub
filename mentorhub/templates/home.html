@@ -16,19 +16,13 @@
         <nav>
             <ul class="nav-links">
                 <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'find_mentors' %}">Find Mentors</a></li>
-                <li><a href="{% url 'quiz_categories' %}">Mock Tests</a></li>
-                <li><a href="{% url 'hire_developer' %}">Hire Developers</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#navigation-section">Explore</a></li>
                 <li><a href="{% url 'contact' %}">Contact</a></li>
             </ul>
 
             <ul class="nav-links nav-right">
                 {% if user.is_authenticated %}
-                    {% if user.mentor_profile %}
-                        <li><a href="{% url 'mentor_dashboard' %}">Mentor Dashboard</a></li>
-                    {% endif %}
-                    <li><a href="{% url 'mentee_profile_view' %}">My Profile</a></li>
-                    <li><a href="{% url 'mentee_dashboard' %}">My Sessions</a></li>
                     <li><span class="welcome-text">Welcome, {{ user.first_name|default:user.username }}!</span></li>
                     <li><a href="{% url 'logout' %}" class="btn">Logout</a></li>
                 {% else %}
@@ -61,6 +55,50 @@
                         <a href="{% url 'signup' %}" class="btn-primary">Get Started</a>
                     {% endif %}
                     <a href="{% url 'hire_developer' %}" class="btn-hire">Hire a Developer</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Section -->
+        <section id="navigation-section" class="navigation-section">
+            <div class="nav-container">
+                <h2>Explore Our Services</h2>
+                <p class="nav-subtitle">Choose what you'd like to do</p>
+                <div class="nav-cards-grid">
+                    <div class="nav-card">
+                        <div class="nav-icon">👨‍💼</div>
+                        <h3><a href="{% url 'find_mentors' %}">Find Mentors</a></h3>
+                        <p>Connect with experienced mentors who can guide you through your coding journey. Get personalized advice and learn from industry experts.</p>
+                        <a href="{% url 'find_mentors' %}" class="nav-link-btn">Explore Mentors →</a>
+                    </div>
+                    <div class="nav-card">
+                        <div class="nav-icon">📝</div>
+                        <h3><a href="{% url 'quiz_categories' %}">Mock Tests</a></h3>
+                        <p>Practice with real interview-style questions and assess your technical knowledge. Track your progress and build confidence for interviews.</p>
+                        <a href="{% url 'quiz_categories' %}" class="nav-link-btn">Take a Test →</a>
+                    </div>
+                    <div class="nav-card">
+                        <div class="nav-icon">💼</div>
+                        <h3><a href="{% url 'hire_developer' %}">Hire Developers</a></h3>
+                        <p>Looking for talented developers? Browse our pool of skilled professionals ready to help with your projects.</p>
+                        <a href="{% url 'hire_developer' %}" class="nav-link-btn">Browse Developers →</a>
+                    </div>
+                    {% if user.is_authenticated %}
+                        <div class="nav-card">
+                            <div class="nav-icon">📊</div>
+                            <h3><a href="{% url 'mentee_dashboard' %}">My Sessions</a></h3>
+                            <p>View and manage your mentoring sessions, track your progress, and schedule new sessions with your mentors.</p>
+                            <a href="{% url 'mentee_dashboard' %}" class="nav-link-btn">View Sessions →</a>
+                        </div>
+                        {% if user.mentor_profile %}
+                            <div class="nav-card">
+                                <div class="nav-icon">🎓</div>
+                                <h3><a href="{% url 'mentor_dashboard' %}">Mentor Dashboard</a></h3>
+                                <p>Manage your mentoring sessions, view student profiles, and track your mentoring activities.</p>
+                                <a href="{% url 'mentor_dashboard' %}" class="nav-link-btn">Open Dashboard →</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </section>

@@ -6,6 +6,10 @@
   <title>Add Question</title>
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <style>
+    .error-message { color: red; font-size: 0.9em; margin-top: 5px; }
+    .form-error { border-color: red !important; }
+  </style>
 </head>
 <body>
     <div class="layout">
@@ -13,19 +17,66 @@
         <main class="content">
             <h1>Add Question{% if category %} to {{ category.name }}{% endif %}</h1>
             <div class="section" style="max-width: 900px;">
+                {% if form.non_field_errors %}
+                    <div style="color: red; margin-bottom: 15px;">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
                 <form method="post">
                     {% csrf_token %}
+                    
+                    {% if not category %}
+                    <div class="form-group">
+                        <label for="id_category">Category</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="error-message">
+                                {% for error in form.category.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                        <input type="hidden" name="category" value="{{ category.id }}">
+                    {% endif %}
+                    
                     <div class="form-group">
                         <label for="id_text">Question Text</label>
                         {{ form.text }}
+                        {% if form.text.errors %}
+                            <div class="error-message">
+                                {% for error in form.text.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label for="id_marks">Marks</label>
                         {{ form.marks }}
+                        {% if form.marks.errors %}
+                            <div class="error-message">
+                                {% for error in form.marks.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                     
                     <h2>Options</h2>
                     {{ formset.management_form }}
+                    {% if formset.non_form_errors %}
+                        <div style="color: red; margin-bottom: 15px;">
+                            {% for error in formset.non_form_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
                     <div style="overflow-x: auto;">
                         <table style="width: 100%;">
                             <thead>
@@ -38,8 +89,26 @@
                             <tbody>
                                 {% for form in formset.forms %}
                                     <tr>
-                                        <td style="padding: 8px;">{{ form.text }}</td>
-                                        <td style="padding: 8px; text-align: center;">{{ form.is_correct }}</td>
+                                        <td style="padding: 8px;">
+                                            {{ form.text }}
+                                            {% if form.text.errors %}
+                                                <div class="error-message">
+                                                    {% for error in form.text.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td style="padding: 8px; text-align: center;">
+                                            {{ form.is_correct }}
+                                            {% if form.is_correct.errors %}
+                                                <div class="error-message">
+                                                    {% for error in form.is_correct.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </td>
                                         <td style="padding: 8px; text-align: center;">{% if form.DELETE %}{{ form.DELETE }}{% endif %}</td>
                                     </tr>
                                 {% endfor %}
@@ -49,7 +118,11 @@
                     
                     <div class="actions" style="margin-top: 30px;">
                         <button class="btn btn-primary" type="submit">Save Question</button>
-                        <a class="btn-link" href="{% url 'admin_category_detail' category.id %}">Cancel</a>
+                        {% if category %}
+                            <a class="btn-link" href="{% url 'admin_category_detail' category.id %}">Cancel</a>
+                        {% else %}
+                            <a class="btn-link" href="{% url 'admin_quiz_manage' %}">Cancel</a>
+                        {% endif %}
                     </div>
                 </form>
             </div>
