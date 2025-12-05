@@ -200,7 +200,6 @@
             {% endif %}
             {% if mentor_profile.user and mentor_profile.user == request.user %}
                 <p><a href="{% url 'mentor_profile_edit' %}">✏️ Edit Profile</a></p>
-                <p><a href="{% url 'change_password' %}">� Change Password</a></p>
             {% endif %}
             <p><a href="{% url 'home' %}">← Back to Home</a></p>
         </div>

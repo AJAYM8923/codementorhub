@@ -12,18 +12,20 @@
 
     <!-- Header -->
     <header class="navbar">
-        <div class="logo">CodeMentor<span>Hub</span></div>
+        <div class="logo">
+            <a href="{% url 'home' %}" style="text-decoration:none;color:whitesmoke;">
+                CodeMentor<span>Hub</span>
+            </a>
+        </div>
         <nav>
-            <ul class="nav-links">
-                <li><a href="{% url 'home' %}">Home</a></li>
+            <ul class="nav-links nav-left">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#navigation-section">Explore</a></li>
-                <li><a href="{% url 'contact' %}">Contact</a></li>
             </ul>
 
             <ul class="nav-links nav-right">
                 {% if user.is_authenticated %}
-                    <li><span class="welcome-text">Welcome, {{ user.first_name|default:user.username }}!</span></li>
+                    <li><a href="{% url 'change_password' %}">Change Password</a></li>
                     <li><a href="{% url 'logout' %}" class="btn">Logout</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}" class="btn">Login</a></li>
@@ -39,6 +41,13 @@
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}">{{ message }}</div>
             {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Welcome banner moved into body (visible in page content) -->
+    {% if user.is_authenticated %}
+        <div class="messages" style="max-width:var(--maxw);margin:1rem auto;padding:0 1rem;">
+            <div class="alert alert-info">Welcome, {{ user.first_name|default:user.username }}!</div>
         </div>
     {% endif %}
 

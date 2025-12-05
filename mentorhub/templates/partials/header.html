@@ -12,7 +12,6 @@
                 {% endif %}
                 <li><a href="{% url 'mentee_dashboard' %}">My Sessions</a></li>
                 <li><a href="{% url 'hire_developer' %}">Hire a developer</a></li>
-                <li><a href="{% url 'change_password' %}">Change Password</a></li>
                 {% if request and request.resolver_match and request.resolver_match.url_name == 'home' %}
                     <li><span class="welcome-text">Welcome, {{ user.first_name|default:user.username }}!</span></li>
                 {% endif %}

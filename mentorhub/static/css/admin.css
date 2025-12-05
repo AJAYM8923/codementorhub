@@ -397,6 +397,25 @@ input[type="submit"]:hover {
     transition: all 0.2s ease;
 }
 
+/* Make action buttons in table cells more visible and consistent */
+td .actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+td .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
 .btn-complete {
     background: #10b981;
     color: white;
