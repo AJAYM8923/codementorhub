@@ -109,6 +109,9 @@
             color: #667eea;
             font-size: 1.1rem;
         }
+        .rating-stars { display: inline-flex; gap: 2px; font-size: 1.1rem; color: #ddd; }
+        .rating-stars .filled { color: #f5b301; }
+        .rating-text { font-weight: 700; color: #333; margin-left: 6px; }
 
         /* ===== CONTENT SECTIONS ===== */
         .content-section {
@@ -408,6 +411,20 @@
                             </div>
                             <div class="meta-item">
                                 ⏱️ {{ mentor.session_duration }} min sessions
+                            </div>
+                            <div class="meta-item">
+                                <div class="rating-stars">
+                                    {% for _ in "12345"|make_list %}
+                                        <span class="{% if forloop.counter <= mentor.average_rating_rounded %}filled{% endif %}">★</span>
+                                    {% endfor %}
+                                </div>
+                                <span class="rating-text">
+                                    {% if mentor.rating_count %}
+                                        {{ mentor.average_rating }} / 5 ({{ mentor.rating_count }} reviews)
+                                    {% else %}
+                                        No reviews yet
+                                    {% endif %}
+                                </span>
                             </div>
                         </div>
                     </div>

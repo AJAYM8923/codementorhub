@@ -35,10 +35,22 @@
                 </div>
                 {% endif %}
 
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     
                     <h2>Mentor Profile</h2>
+                    <div class="form-group">
+                        <label>Profile Picture</label>
+                        {% if mentor and mentor.profile_picture %}
+                            <div style="margin-bottom: 10px;">
+                                <img src="{{ mentor.profile_picture.url }}" alt="Current profile picture" style="max-width: 150px; max-height: 150px; border-radius: 8px; border: 2px solid #ddd;">
+                            </div>
+                            <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Current profile picture. Upload a new image to replace it.</p>
+                        {% endif %}
+                        <input type="file" name="profile_picture" accept="image/*">
+                        <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">Recommended: Square image, at least 400x400 pixels</p>
+                    </div>
+                    
                     <div class="form-row">
                         <div class="form-group">
                             <label>Full Name *</label>

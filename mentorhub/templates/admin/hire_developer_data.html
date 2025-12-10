@@ -23,6 +23,7 @@
                         <th>Phone</th>
                         <th>Project Type</th>
                         <th>Project Heading</th>
+                        <th>Project Details</th>
                         <th>Message</th>
                         <th>Deadline</th>
                     </tr>
@@ -35,6 +36,7 @@
                         <td>{{ entry.number }}</td>
                         <td>{{ entry.project_type }}</td>
                         <td>{{ entry.project_heading }}</td>
+                        <td>{{ entry.project_details|truncatewords:15 }}</td>
                         <td>{{ entry.message|truncatewords:15 }}</td>
                         <td>{{ entry.deadline|date:"M d, Y" }}</td>
                     </tr>

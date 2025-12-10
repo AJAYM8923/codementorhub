@@ -531,9 +531,10 @@
 
         function validatePhone() {
             if (!number) return true;
-            const pattern = /^\+?[0-9\-\s]{7,15}$/;
-            const valid = pattern.test(number.value.trim());
-            number.setCustomValidity(valid ? '' : 'Enter a valid phone number (7-15 digits).');
+            const trimmedValue = number.value.trim();
+            const pattern = /^[0-9]{10}$/;
+            const valid = pattern.test(trimmedValue);
+            number.setCustomValidity(valid ? '' : 'Please enter a valid 10-digit mobile number (digits only).');
             return valid;
         }
 

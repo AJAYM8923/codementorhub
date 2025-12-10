@@ -25,8 +25,8 @@ class HireDeveloperForm(ModelForm):
             }),
             'number': forms.TextInput(attrs={
                 'inputmode': 'tel',
-                'pattern': r'^\+?[0-9\-\s]{7,15}$',
-                'placeholder': '+1 555-123-4567',
+                'pattern': r'^[0-9]{10}$',
+                'placeholder': '1234567890',
                 'required': 'required'
             }),
             'deadline': forms.DateInput(attrs={
@@ -38,6 +38,17 @@ class HireDeveloperForm(ModelForm):
             'project_details': forms.Textarea(attrs={'rows': 4, 'required': 'required'}),
             'message': forms.Textarea(attrs={'rows': 3}),
         }
+
+    def clean_number(self):
+        number = self.cleaned_data.get('number')
+        if number:
+            # Remove any whitespace and check if it's exactly 10 digits
+            number_str = str(number).strip()
+            if not number_str.isdigit():
+                raise forms.ValidationError('Mobile number must contain only digits.')
+            if len(number_str) != 10:
+                raise forms.ValidationError('Mobile number must be exactly 10 digits.')
+        return number
 
     def clean_deadline(self):
         deadline = self.cleaned_data.get('deadline')

@@ -101,6 +101,25 @@ class MentorProfile(models.Model):
         return f"{self.full_name} - {self.headline}"
     
     @property
+    def average_rating(self):
+        """Return average rating from mentee feedback; 0 when no feedback."""
+        from django.db.models import Avg  # local import to avoid circulars at import time
+        agg = self.feedbacks.aggregate(avg=Avg('rating'))
+        avg = agg.get('avg') or 0
+        # Round to single decimal to keep UI compact
+        return round(avg, 1) if avg else 0
+    
+    @property
+    def rating_count(self):
+        """Total number of feedback entries for this mentor."""
+        return self.feedbacks.count()
+    
+    @property
+    def average_rating_rounded(self):
+        """Rounded average for quick star display."""
+        return int(round(self.average_rating))
+    
+    @property
     def is_available(self):
         """Check if mentor is available for booking"""
         return self.is_approved and self.application_status == 'approved'
@@ -229,6 +248,22 @@ class Session(models.Model):
         self.save()
         return self.meeting_link
 
+
+class MentorFeedback(models.Model):
+    """Feedback left by a mentee for a completed session."""
+    mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, related_name='feedbacks')
+    mentee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mentor_feedbacks')
+    session = models.OneToOneField(Session, on_delete=models.CASCADE, related_name='feedback')
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Feedback {self.rating}/5 by {self.mentee.username} for {self.mentor.full_name}"
+
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -245,7 +280,7 @@ class ContactMessage(models.Model):
 class hire_developer(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
-    number = models.IntegerField()
+    number = models.CharField(max_length=10)
     message = models.TextField()
     project_type = models.CharField(max_length=100)
     project_heading = models.CharField(max_length=200)

@@ -51,6 +51,7 @@ urlpatterns = [
     path('book-session/<int:mentor_id>/', views.book_session, name="book_session"),
     path('payment/<int:session_id>/', views.payment_page, name="payment_page"),
     path('session-confirmation/<int:session_id>/', views.session_confirmation, name="session_confirmation"),
+    path('session/<int:session_id>/', views.mentee_session_detail, name="mentee_session_detail"),
     path('mentee-dashboard/', views.mentee_dashboard, name="mentee_dashboard"),
     path('mentor-dashboard/', views.mentor_dashboard, name="mentor_dashboard"),
     path('mentor/session/<int:session_id>/', views.mentor_session_detail, name='mentor_session_detail'),

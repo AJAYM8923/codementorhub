@@ -11,7 +11,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import PasswordResetToken, MentorProfile, MenteeProfile, Skill, Session, hire_developer, ContactMessage
+from .models import PasswordResetToken, MentorProfile, MenteeProfile, Skill, Session, hire_developer, ContactMessage, MentorFeedback
 from .models import Category, Question, Option, TestAttempt, AttemptAnswer
 from .forms import CategoryForm, QuestionForm, OptionFormSet
 import hashlib
@@ -46,6 +46,11 @@ def login_view(request):
         if username and password:
             user = authenticate(request, username=username, password=password)
             if user is not None:
+                # Clear any existing messages before login to prevent message leakage
+                storage = messages.get_messages(request)
+                for _ in storage:
+                    pass  # Consume all existing messages
+                
                 login(request, user)
                 messages.success(request, f"Welcome back, {user.username}!")
                 # Redirect staff to custom admin dashboard
@@ -97,7 +102,21 @@ def signup_view(request):
 
 @login_required
 def logout_view(request):
+    # Clear all existing messages from the session before logout
+    # This prevents messages from admin actions or other pages from persisting
+    # Consume all messages to mark them as used/read
+    storage = messages.get_messages(request)
+    for _ in storage:
+        pass  # Consume all messages
+    
+    # Logout the user
     logout(request)
+    
+    # Flush the session to ensure no data (including messages) persists
+    # This is important to prevent messages from showing to other users
+    request.session.flush()
+    
+    # Add logout success message (Django will create a new session automatically)
     messages.success(request, "You have been logged out successfully.")
     return redirect('home')
 
@@ -377,12 +396,14 @@ def admin_dashboard(request):
     pending_mentors = MentorProfile.objects.filter(application_status='pending').count()
     approved_mentors = MentorProfile.objects.filter(application_status='approved').count()
     total_skills = Skill.objects.count()
+    recent_feedbacks = MentorFeedback.objects.select_related('mentor', 'mentee', 'session')[:10]
     return render(request, 'admin/dashboard.html', {
         'total_users': total_users,
         'total_mentors': total_mentors,
         'pending_mentors': pending_mentors,
         'approved_mentors': approved_mentors,
         'total_skills': total_skills,
+        'recent_feedbacks': recent_feedbacks,
     })
 
 @staff_required
@@ -535,6 +556,11 @@ def admin_mentor_add(request):
             is_approved=True,
             application_status='approved',
         )
+        
+        # Handle profile picture upload
+        if 'profile_picture' in request.FILES:
+            mentor_profile.profile_picture = request.FILES['profile_picture']
+            mentor_profile.save()
 
         # ✅ Save selected skills (checkbox values)
         selected_skill_ids = request.POST.getlist('skills')
@@ -572,6 +598,11 @@ def admin_mentor_edit(request, mentor_id):
         mentor.available_for = request.POST.get('available_for') or mentor.available_for
         mentor.is_approved = True
         mentor.application_status = 'approved'
+        
+        # Handle profile picture upload
+        if 'profile_picture' in request.FILES:
+            mentor.profile_picture = request.FILES['profile_picture']
+        
         mentor.save()
         selected_skill_ids = request.POST.getlist('skills')
         mentor.skills.set(selected_skill_ids)
@@ -752,6 +783,44 @@ def mentee_dashboard(request):
         'upcoming_sessions': upcoming_sessions,
         'past_sessions': past_sessions,
         'sessions_cancelled': cancelled_sessions
+    })
+
+
+@login_required
+def mentee_session_detail(request, session_id):
+    """Detailed view for a mentee's session with ability to leave feedback."""
+    session = get_object_or_404(Session, id=session_id, mentee=request.user)
+    feedback = getattr(session, 'feedback', None)
+    can_leave_feedback = session.status == 'completed' and feedback is None
+
+    if request.method == 'POST':
+        if not can_leave_feedback:
+            messages.error(request, "Feedback can only be left once for completed sessions.")
+            return redirect('mentee_session_detail', session_id=session.id)
+
+        try:
+            rating = int(request.POST.get('rating', 0))
+        except (TypeError, ValueError):
+            rating = 0
+        comment = (request.POST.get('comment') or '').strip()
+
+        if rating < 1 or rating > 5:
+            messages.error(request, "Please select a rating between 1 and 5 stars.")
+        else:
+            MentorFeedback.objects.create(
+                mentor=session.mentor,
+                mentee=request.user,
+                session=session,
+                rating=rating,
+                comment=comment
+            )
+            messages.success(request, "Thanks for your feedback!")
+            return redirect('mentee_session_detail', session_id=session.id)
+
+    return render(request, 'dashboard/mentee_session_detail.html', {
+        'session': session,
+        'feedback': feedback,
+        'can_leave_feedback': can_leave_feedback,
     })
 
 @login_required

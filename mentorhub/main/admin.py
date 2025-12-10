@@ -15,6 +15,7 @@ class MentorProfileAdmin(admin.ModelAdmin):
     list_filter = ['application_status', 'is_approved', 'years_of_experience', 'created_at']
     search_fields = ['full_name', 'headline', 'bio', 'user__username', 'user__email']
     readonly_fields = ['created_at', 'updated_at']
+    autocomplete_fields = ['skills']
     
     fieldsets = (
         ('Personal Information', {
@@ -31,8 +32,6 @@ class MentorProfileAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
-    filter_horizontal = ['skills']
 
     # Use a custom form so the admin doesn't treat availability as required
     class MentorProfileForm(forms.ModelForm):

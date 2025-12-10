@@ -10,15 +10,15 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/user_theme.css' %}">
 </head>
 <body>
-    <div class="container">
+    <!-- Header/Navbar -->
+    {% include 'partials/header.html' %}
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
         <div class="header">
             <h1>My Sessions</h1>
             <p>Manage your booked mentoring sessions</p>
-        </div>
-        
-        <div class="nav-links">
-            <a href="{% url 'find_mentors' %}">Find Mentors</a>
-            <a href="{% url 'home' %}">Home</a>
         </div>
         
         <div class="section">
@@ -73,6 +73,10 @@
                                 <strong>Notes:</strong> {{ session.meeting_notes }}
                             </div>
                         {% endif %}
+                        
+                        <div style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
+                            <a href="{% url 'mentee_session_detail' session.id %}" style="background:#667eea; color:white; padding:8px 14px; border-radius:6px; text-decoration:none; font-weight:600;">View details</a>
+                        </div>
                     </div>
                 {% endfor %}
             {% else %}
@@ -110,6 +114,9 @@
                             <div class="detail-label">Amount</div>
                             <div class="detail-value">${{ session.amount_paid }}</div>
                         </div>
+                    </div>
+                    <div style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <a href="{% url 'mentee_session_detail' session.id %}" style="background:#667eea; color:white; padding:8px 14px; border-radius:6px; text-decoration:none; font-weight:600;">View details</a>
                     </div>
                 </div>
             {% endfor %}
@@ -149,6 +156,11 @@
         </div>
         {% endif %}
         {% endwith %}
-    </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    {% include 'partials/footer.html' %}
+
 </body>
 </html>
