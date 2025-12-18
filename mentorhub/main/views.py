@@ -337,7 +337,9 @@ def find_mentors(request):
 def mentor_detail(request, mentor_id):
     """View individual mentor profile"""
     mentor = get_object_or_404(MentorProfile, id=mentor_id, is_approved=True, application_status='approved')
-    return render(request, 'mentor_detail.html', {'mentor': mentor})
+    # Load feedbacks to display as reviews on the mentor profile
+    feedbacks = mentor.feedbacks.select_related('mentee').all()
+    return render(request, 'mentor_detail.html', {'mentor': mentor, 'feedbacks': feedbacks})
 
 # Mentee Views
 @login_required

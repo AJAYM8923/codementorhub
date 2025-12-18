@@ -468,6 +468,31 @@
             </div>
             {% endif %}
             
+            <!-- Reviews Section -->
+            <div class="content-section">
+                <h2>Reviews</h2>
+                {% if feedbacks and feedbacks|length %}
+                    {% for fb in feedbacks %}
+                        <div style="border-bottom:1px solid #eee; padding:12px 0;">
+                            <div class="rating-stars" style="font-size:16px;">
+                                {% for _ in "12345"|make_list %}
+                                    <span class="{% if forloop.counter <= fb.rating %}filled{% endif %}">★</span>
+                                {% endfor %}
+                                <span style="margin-left:8px; font-weight:700;">{{ fb.rating }}/5</span>
+                            </div>
+                            {% if fb.comment %}
+                                <p style="margin:8px 0 6px 0;">{{ fb.comment }}</p>
+                            {% endif %}
+                            <div style="color:#666; font-size:13px;">
+                                By {{ fb.mentee.first_name|default:fb.mentee.username }} on {{ fb.created_at|date:"M d, Y" }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No reviews yet. Be the first to leave feedback after a session.</p>
+                {% endif %}
+            </div>
+            
             <!-- CTA Section -->
             <div class="cta-section">
                 <h2>Ready to Get Started?</h2>
