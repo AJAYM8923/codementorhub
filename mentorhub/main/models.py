@@ -359,6 +359,7 @@ class AttemptAnswer(models.Model):
     attempt = models.ForeignKey(TestAttempt, on_delete=models.CASCADE, related_name='answers')
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     selected_option = models.ForeignKey(Option, on_delete=models.SET_NULL, null=True, blank=True)
+    selected_options = models.ManyToManyField(Option, blank=True, related_name='answers_selected')
     is_correct = models.BooleanField(default=False)
     marks_awarded = models.PositiveIntegerField(default=0)
 
