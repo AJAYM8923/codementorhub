@@ -1231,26 +1231,31 @@ def take_test(request, category_id):
 
         for q in questions:
             field_name = f"q_{q.id}"
-            selected_option_id = request.POST.get(field_name)
-            selected_option = None
-            marks_awarded = 0
-            is_correct = False
-            if selected_option_id:
-                try:
-                    selected_option = Option.objects.get(id=int(selected_option_id), question=q)
-                    if selected_option.is_correct:
-                        marks_awarded = q.marks
-                        is_correct = True
-                except Option.DoesNotExist:
-                    selected_option = None
-
-            AttemptAnswer.objects.create(
+            selected_option_ids = request.POST.getlist(field_name)
+            
+            all_options = list(q.options.all())
+            correct_option_ids = [opt.id for opt in all_options if opt.is_correct]
+            
+            user_set = {int(oid) for oid in selected_option_ids}
+            correct_set = set(correct_option_ids)
+            is_correct = (user_set == correct_set)
+            
+            marks_awarded = q.marks if is_correct else 0
+            selected_options_list = [opt for opt in all_options if opt.id in user_set]
+            
+            # First element for legacy selected_option compatibility
+            legacy_option = selected_options_list[0] if selected_options_list else None
+            
+            answer = AttemptAnswer.objects.create(
                 attempt=attempt,
                 question=q,
-                selected_option=selected_option,
+                selected_option=legacy_option,
                 is_correct=is_correct,
                 marks_awarded=marks_awarded
             )
+            if selected_options_list:
+                answer.selected_options.set(selected_options_list)
+            
             score += marks_awarded
 
         attempt.score = score
@@ -1266,7 +1271,7 @@ def take_test(request, category_id):
 @login_required
 def test_result(request, attempt_id):
     attempt = get_object_or_404(TestAttempt, id=attempt_id, user=request.user)
-    answers = attempt.answers.select_related('question', 'selected_option').all()
+    answers = attempt.answers.select_related('question', 'selected_option').prefetch_related('selected_options', 'question__options').all()
     return render(request, 'quiz/result.html', {'attempt': attempt, 'answers': answers})
 
 
@@ -1302,15 +1307,12 @@ def admin_edit_question(request, question_id):
     question = get_object_or_404(Question, id=question_id)
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
-        if form.is_valid():
-            question = form.save()
-            formset = OptionFormSet(request.POST, instance=question)
-            if formset.is_valid():
-                formset.save()
-                messages.success(request, 'Question updated successfully.')
-                return redirect('admin_category_detail', category_id=question.category.id)
-        else:
-            formset = OptionFormSet(request.POST, instance=question)
+        formset = OptionFormSet(request.POST, instance=question)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            messages.success(request, 'Question updated successfully.')
+            return redirect('admin_category_detail', category_id=question.category.id)
     else:
         form = QuestionForm(instance=question)
         formset = OptionFormSet(instance=question)

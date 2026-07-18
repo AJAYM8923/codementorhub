@@ -39,7 +39,12 @@
                             <tbody>
                                 {% for form in formset.forms %}
                                     <tr>
-                                        <td style="padding: 8px;">{{ form.text }}</td>
+                                        <td style="padding: 8px;">
+                                            {% for hidden in form.hidden_fields %}
+                                                {{ hidden }}
+                                            {% endfor %}
+                                            {{ form.text }}
+                                        </td>
                                         <td style="padding: 8px; text-align: center;">{{ form.is_correct }}</td>
                                         <td style="padding: 8px; text-align: center;">{% if form.DELETE %}{{ form.DELETE }}{% endif %}</td>
                                     </tr>

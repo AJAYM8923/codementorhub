@@ -104,7 +104,8 @@
         border-color: #667eea;
     }
 
-    .option-row input[type="radio"] {
+    .option-row input[type="radio"],
+    .option-row input[type="checkbox"] {
         margin-right: 1rem;
         cursor: pointer;
         width: 18px;
@@ -212,7 +213,8 @@
             padding: 0.7rem;
         }
 
-        .option-row input[type="radio"] {
+        .option-row input[type="radio"],
+        .option-row input[type="checkbox"] {
             width: 16px;
             height: 16px;
         }
@@ -251,7 +253,7 @@
             <div class="options">
               {% for opt in q.options.all %}
                 <label class="option-row">
-                  <input type="radio" name="q_{{ q.id }}" value="{{ opt.id }}"> <span>{{ opt.text }}</span>
+                  <input type="checkbox" name="q_{{ q.id }}" value="{{ opt.id }}"> <span>{{ opt.text }}</span>
                 </label>
               {% endfor %}
             </div>

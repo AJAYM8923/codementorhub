@@ -326,7 +326,26 @@
           {% for a in answers %}
             <li class="answer-item">
               <div class="question-text">Q{{ forloop.counter }}: {{ a.question.text }}</div>
-              <div class="your-answer">Your answer: {% if a.selected_option %}<strong>{{ a.selected_option.text }}</strong>{% else %}<em>No answer provided</em>{% endif %}</div>
+              <div class="your-answer">Your answer: 
+                {% if a.selected_options.all %}
+                  <strong>
+                    {% for opt in a.selected_options.all %}
+                      • {{ opt.text }} &nbsp;
+                    {% endfor %}
+                  </strong>
+                {% else %}
+                  <em>No answer provided</em>
+                {% endif %}
+              </div>
+              <div class="correct-answer" style="color: #4b5563; margin-top: 0.2rem; font-size: 0.9em;">Correct answer: 
+                <strong>
+                  {% for opt in a.question.options.all %}
+                    {% if opt.is_correct %}
+                      • {{ opt.text }} &nbsp;
+                    {% endif %}
+                  {% endfor %}
+                </strong>
+              </div>
               <div class="marks">✓ Marks awarded: {{ a.marks_awarded }}</div>
             </li>
           {% endfor %}
